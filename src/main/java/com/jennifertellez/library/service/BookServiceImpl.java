@@ -3,6 +3,8 @@ package com.jennifertellez.library.service;
 import com.jennifertellez.library.dto.BookResponse;
 import com.jennifertellez.library.dto.CreateBookRequest;
 import com.jennifertellez.library.dto.UpdateBookRequest;
+import com.jennifertellez.library.exception.BookNotFoundException;
+import com.jennifertellez.library.exception.DuplicateBookException;
 import com.jennifertellez.library.model.Book;
 import com.jennifertellez.library.model.ReadingStatus;
 import com.jennifertellez.library.repository.BookRepository;
@@ -29,7 +31,7 @@ public class BookServiceImpl implements BookService {
         //Check for duplicate ISBN if provided
         if (request.getIsbn() != null && !request.getIsbn().isEmpty()) {
             if (bookRepository.existsByIsbn(request.getIsbn())) {
-                throw new RuntimeException("Book with ISBN " + request.getIsbn() + " already exists");
+                throw new DuplicateBookException(request.getIsbn());
             }
         }
 
@@ -55,7 +57,7 @@ public class BookServiceImpl implements BookService {
     public BookResponse getBookById(Long id) {
         log.info("Fetching book with ID: {}", id);
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Book not found with ID: " + id));
+                .orElseThrow(() -> new BookNotFoundException(id));
         return mapToResponse(book);
     }
 
@@ -82,7 +84,7 @@ public class BookServiceImpl implements BookService {
         log.info("Updating book with ID: {}", id);
 
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Book not found with ID: " + id));
+                .orElseThrow(() -> new BookNotFoundException(id));
 
         //Update only non-null fields
         if (request.getTitle() != null) {
@@ -118,7 +120,7 @@ public class BookServiceImpl implements BookService {
         log.info("Deleting book with ID: {}", id);
 
         if (!bookRepository.existsById(id)) {
-            throw new RuntimeException("Book not found with ID: " + id);
+            throw new BookNotFoundException(id);
         }
 
         bookRepository.deleteById(id);

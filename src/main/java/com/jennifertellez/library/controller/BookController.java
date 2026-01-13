@@ -5,6 +5,7 @@ import com.jennifertellez.library.dto.CreateBookRequest;
 import com.jennifertellez.library.dto.UpdateBookRequest;
 import com.jennifertellez.library.model.ReadingStatus;
 import com.jennifertellez.library.service.BookService;
+import com.jennifertellez.library.service.GoogleBooksService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,12 +22,21 @@ import java.util.List;
 public class BookController {
 
     private final BookService bookService;
+    private final GoogleBooksService googleBooksService;
 
     //Create a new book entity
     @PostMapping
     public ResponseEntity<BookResponse> createBook(@Valid @RequestBody CreateBookRequest request) {
         log.info("POST /api/books - Creating new book");
         BookResponse response = bookService.createBook(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    //Create a new book entity using Google API
+    @PostMapping("/isbn/{isbn}")
+    public ResponseEntity<BookResponse> createBookByIsbn(@PathVariable String isbn) {
+        log.info("POST /api/books/isbn/{} - Creating book from ISBN", isbn);
+        BookResponse response = googleBooksService.fetchAndCreateBooksByIsbn(isbn);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

@@ -29,7 +29,7 @@ public class BookServiceImpl implements BookService {
         //Check for duplicate ISBN if provided
         if (request.getIsbn() != null && !request.getIsbn().isEmpty()) {
             if (bookRepository.existsByIsbn(request.getIsbn())) {
-                throw new RuntimeException("Book wit ISBN " + request.getIsbn() + " already exists");
+                throw new RuntimeException("Book with ISBN " + request.getIsbn() + " already exists");
             }
         }
 

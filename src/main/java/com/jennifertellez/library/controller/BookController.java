@@ -22,6 +22,7 @@ public class BookController {
 
     private final BookService bookService;
 
+    //Create a new book entity
     @PostMapping
     public ResponseEntity<BookResponse> createBook(@Valid @RequestBody CreateBookRequest request) {
         log.info("POST /api/books - Creating new book");
@@ -29,6 +30,7 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    //Get all books in library
     @GetMapping
     public ResponseEntity<List<BookResponse>> getAllBooks() {
         log.info("GET /api/books - Fetching all books");
@@ -36,6 +38,7 @@ public class BookController {
         return ResponseEntity.ok(books);
     }
 
+    //Get a book by id
     @GetMapping("/{id}")
     public ResponseEntity<BookResponse> getBookId(@PathVariable Long id) {
         log.info("GET /api/books/{} - Fetching book by ID", id);
@@ -43,6 +46,7 @@ public class BookController {
         return ResponseEntity.ok(response);
     }
 
+    //Get books by its status
     @GetMapping("/status/{status}")
     public ResponseEntity<List<BookResponse>> getBooksByStatus(@PathVariable ReadingStatus status) {
         log.info("GET /api/books/status/{} - Fetching books by status", status);
@@ -50,6 +54,7 @@ public class BookController {
         return ResponseEntity.ok(books);
     }
 
+    //Update a book
     @PutMapping("/{id}")
     public ResponseEntity<BookResponse> updateBook(
             @PathVariable Long id,
@@ -59,6 +64,7 @@ public class BookController {
         return ResponseEntity.ok(response);
     }
 
+    //Delete book
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
         log.info("DELETE /api/books/{} - Deleting book", id);
@@ -66,6 +72,7 @@ public class BookController {
         return ResponseEntity.noContent().build();
     }
 
+    //Search for a specific book
     @GetMapping("/search")
     public ResponseEntity<List<BookResponse>> searchBooks(@RequestParam String term) {
         log.info("GET /api/books/search?term={} - Seraching books", term);

@@ -10,6 +10,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "books", indexes = {
@@ -59,6 +61,9 @@ public class Book {
 
     @Column(length = 2000)
     private String notes;
+
+    @ManyToMany(mappedBy = "books")
+    private Set<Shelf> shelves = new HashSet<>();
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

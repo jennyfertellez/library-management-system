@@ -14,9 +14,13 @@ import java.util.Optional;
 public interface BookRepository extends JpaRepository<Book, Long> {
 
     Optional<Book> findByIsbn(String isbn);
+
     boolean existsByIsbn(String isbn);
+
     List<Book> findByStatus(ReadingStatus status);
+
     List<Book> findByAuthorContainingIgnoreCase(String author);
+
     List<Book> findByTitleContainingIgnoreCase(String title);
 
     @Query("SELECT b FROM Book b WHERE " +

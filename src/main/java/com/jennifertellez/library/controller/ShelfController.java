@@ -92,7 +92,7 @@ public class ShelfController {
             description = "Adds a book into a shelf"
     )
     @PostMapping("/{shelfId}/books/{bookId}")
-    public ResponseEntity<ShelfResponse> addBookToShelf (
+    public ResponseEntity<ShelfResponse> addBookToShelf(
             @PathVariable Long shelfId,
             @PathVariable Long bookId) {
         log.info("POST /api/shelves/{}/books/{} - Adding book to shelf", shelfId, bookId);
@@ -105,7 +105,7 @@ public class ShelfController {
             description = "Delete book from shelf"
     )
     @DeleteMapping("/{shelfId}/books/{bookId}")
-    public ResponseEntity<ShelfResponse> removeBookFromShelf (
+    public ResponseEntity<ShelfResponse> removeBookFromShelf(
             @PathVariable Long shelfId,
             @PathVariable Long bookId) {
         log.info("DELETE /api/shelves/{}/books/{} - Removing book from shelf", shelfId, bookId);

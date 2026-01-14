@@ -86,7 +86,7 @@ public class ShelfServiceImpl implements ShelfService {
     public void deleteShelf(Long id) {
         log.info("Deleting shelf with ID: {}", id);
 
-        if(!shelfRepository.existsById(id)) {
+        if (!shelfRepository.existsById(id)) {
             throw new RuntimeException("Shelf not found with ID: " + id);
         }
 
@@ -145,7 +145,7 @@ public class ShelfServiceImpl implements ShelfService {
                     bookResponse.setAuthor(book.getAuthor());
                     bookResponse.setIsbn(book.getIsbn());
                     bookResponse.setStatus(book.getStatus());
-                    return  bookResponse;
+                    return bookResponse;
                 })
                 .collect(Collectors.toList());
 

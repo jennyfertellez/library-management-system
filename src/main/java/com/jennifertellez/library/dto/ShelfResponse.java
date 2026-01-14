@@ -1,6 +1,5 @@
 package com.jennifertellez.library.dto;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

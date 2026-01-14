@@ -95,7 +95,7 @@ class BookRepositoryTest {
         entityManager.persist(book);
         entityManager.flush();
 
-        List<Book> found  = bookRepository.searchBooks("heart");
+        List<Book> found = bookRepository.searchBooks("heart");
 
         assertEquals(1, found.size());
         assertEquals("Heart the Lover", found.get(0).getTitle());

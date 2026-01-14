@@ -20,7 +20,7 @@ public class GoogleBooksResponse {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class VolumeInfo {
         private String title;
-        private  List<String> authors;
+        private List<String> authors;
         private String description;
         private String publishedDate;
         private Integer pageCount;

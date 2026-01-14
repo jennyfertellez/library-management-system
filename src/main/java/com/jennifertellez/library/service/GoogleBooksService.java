@@ -15,10 +15,9 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 public class GoogleBooksService {
 
+    private static final String GOOGLE_BOOKS_API = "https://www.googleapis.com/books/v1/volumes?q=isbn:";
     private final RestTemplate restTemplate;
     private final BookService bookService;
-
-    private static final String GOOGLE_BOOKS_API = "https://www.googleapis.com/books/v1/volumes?q=isbn:";
 
     public BookResponse fetchAndCreateBooksByIsbn(String isbn) {
         log.info("Fetching book details from Google Books API for ISBN: {}", isbn);
@@ -38,7 +37,7 @@ public class GoogleBooksService {
             request.setTitle(volumeInfo.getTitle());
             request.setAuthor(volumeInfo.getAuthors() != null && !volumeInfo.getAuthors().isEmpty()
                     ? String.join(", ", volumeInfo.getAuthors())
-                    :null);
+                    : null);
             request.setDescription(volumeInfo.getDescription());
             request.setPublishedDate(volumeInfo.getPublishedDate());
             request.setPageCount(volumeInfo.getPageCount());

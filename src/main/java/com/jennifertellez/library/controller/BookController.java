@@ -6,6 +6,10 @@ import com.jennifertellez.library.dto.UpdateBookRequest;
 import com.jennifertellez.library.model.ReadingStatus;
 import com.jennifertellez.library.service.BookService;
 import com.jennifertellez.library.service.GoogleBooksService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Books", description = "Book management APIs")
 @RestController
 @RequestMapping("/api/books")
 @RequiredArgsConstructor
@@ -24,6 +29,15 @@ public class BookController {
     private final BookService bookService;
     private final GoogleBooksService googleBooksService;
 
+    @Operation(
+            summary = "Create a new book",
+            description = "Creates a new book with the provided details"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Book created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "409", description = "Book with ISBN already exists")
+    })
     //Create a new book entity
     @PostMapping
     public ResponseEntity<BookResponse> createBook(@Valid @RequestBody CreateBookRequest request) {
@@ -40,6 +54,10 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @Operation(
+            summary = "Get all books",
+            description = "Retrieves a list of all books in the library"
+    )
     //Get all books in library
     @GetMapping
     public ResponseEntity<List<BookResponse>> getAllBooks() {
@@ -48,6 +66,14 @@ public class BookController {
         return ResponseEntity.ok(books);
     }
 
+    @Operation(
+            summary = "Get book by ID",
+            description = "Retrieves a specific book by its ID"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Book found"),
+            @ApiResponse(responseCode = "404", description = "Book not found")
+    })
     //Get a book by id
     @GetMapping("/{id}")
     public ResponseEntity<BookResponse> getBookId(@PathVariable Long id) {
@@ -64,6 +90,10 @@ public class BookController {
         return ResponseEntity.ok(books);
     }
 
+    @Operation(
+            summary = "Update book",
+            description = "Update book"
+    )
     //Update a book
     @PutMapping("/{id}")
     public ResponseEntity<BookResponse> updateBook(
@@ -74,6 +104,10 @@ public class BookController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(
+            summary = "Delete book",
+            description = "Delete book"
+    )
     //Delete book
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
@@ -82,6 +116,10 @@ public class BookController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(
+            summary = "Search books",
+            description = "Search books by title, author, or description"
+    )
     //Search for a specific book
     @GetMapping("/search")
     public ResponseEntity<List<BookResponse>> searchBooks(@RequestParam String term) {

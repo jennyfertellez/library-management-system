@@ -4,6 +4,7 @@ import com.jennifertellez.library.dto.BookResponse;
 import com.jennifertellez.library.dto.CreateBookRequest;
 import com.jennifertellez.library.dto.PageResponse;
 import com.jennifertellez.library.dto.UpdateBookRequest;
+import com.jennifertellez.library.model.BookSearchCriteria;
 import com.jennifertellez.library.model.ReadingStatus;
 import com.jennifertellez.library.service.BookService;
 import com.jennifertellez.library.service.GoogleBooksService;
@@ -104,6 +105,7 @@ public class BookController {
             @ApiResponse(responseCode = "200", description = "Book found"),
             @ApiResponse(responseCode = "404", description = "Book not found")
     })
+
     //Get a book by id
     @GetMapping("/{id}")
     public ResponseEntity<BookResponse> getBookId(@PathVariable Long id) {
@@ -124,6 +126,7 @@ public class BookController {
             summary = "Update book",
             description = "Update book"
     )
+
     //Update a book
     @PutMapping("/{id}")
     public ResponseEntity<BookResponse> updateBook(
@@ -138,6 +141,7 @@ public class BookController {
             summary = "Delete book",
             description = "Delete book"
     )
+
     //Delete book
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
@@ -150,6 +154,7 @@ public class BookController {
             summary = "Search books with pagination",
             description = "Search books by title, author, or description with pagination support"
     )
+
     //Search for a specific book
     @GetMapping("/search")
     public ResponseEntity<PageResponse<BookResponse>> searchBooks(
@@ -162,6 +167,48 @@ public class BookController {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         PageResponse<BookResponse> response = bookService.searchBooks(term, pageable);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            summary = "Advanced search with multiple filters",
+            description = "Search books with multiple criteria: term, status, author, rating range, year range, atc."
+    )
+    @GetMapping("/advanced-search")
+    public ResponseEntity<PageResponse<BookResponse>> advanceSearch(
+            @RequestParam(required = false) String term,
+            @RequestParam(required = false) ReadingStatus status,
+            @RequestParam(required = false) String author,
+            @RequestParam(required = false) Integer minRating,
+            @RequestParam(required = false) Integer maxRating,
+            @RequestParam(required = false) Integer minYear,
+            @RequestParam(required = false) Integer maxYear,
+            @RequestParam(required = false) Boolean hasIsbn,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "title") String sortBy,
+            @RequestParam(defaultValue = "ASC") String direction) {
+
+        log.info("GET /api/books/advance-search with filters");
+
+        BookSearchCriteria criteria = BookSearchCriteria.builder()
+                .searchTerm(term)
+                .status(status)
+                .author(author)
+                .minRating(minRating)
+                .maxRating(maxRating)
+                .minYear(minYear)
+                .maxYear(maxYear)
+                .hasIsbn(hasIsbn)
+                .build();
+
+        Sort.Direction sortDirection = direction.equalsIgnoreCase("DESC")
+                ? Sort.Direction.DESC
+                : Sort.Direction.ASC;
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
+        PageResponse<BookResponse> response = bookService.advanceSearch(criteria, pageable);
 
         return ResponseEntity.ok(response);
     }

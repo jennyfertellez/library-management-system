@@ -7,12 +7,15 @@ import com.jennifertellez.library.dto.UpdateBookRequest;
 import com.jennifertellez.library.exception.BookNotFoundException;
 import com.jennifertellez.library.exception.DuplicateBookException;
 import com.jennifertellez.library.model.Book;
+import com.jennifertellez.library.model.BookSearchCriteria;
 import com.jennifertellez.library.model.ReadingStatus;
 import com.jennifertellez.library.repository.BookRepository;
+import com.jennifertellez.library.repository.BookSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -183,6 +186,18 @@ public class BookServiceImpl implements BookService {
         Page<BookResponse> responsePage = bookPage.map(this::mapToResponse);
 
         return new PageResponse<>(responsePage);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<BookResponse> advanceSearch(BookSearchCriteria criteria, Pageable pageable) {
+        log.info("Advance search with criteria: {}", criteria);
+
+        Specification<Book> spec = BookSpecification.withCriteria(criteria);
+        Page<Book> bookPage = bookRepository.findAll(spec, pageable);
+        Page<BookResponse> responsePage = bookPage.map(this::mapToResponse);
+
+        return  new PageResponse<>(responsePage);
     }
 
     //Helper method to map Entity to DTO

@@ -2,6 +2,7 @@ package com.jennifertellez.library.service;
 
 import com.jennifertellez.library.dto.BookResponse;
 import com.jennifertellez.library.dto.CreateBookRequest;
+import com.jennifertellez.library.dto.PageResponse;
 import com.jennifertellez.library.dto.UpdateBookRequest;
 import com.jennifertellez.library.exception.BookNotFoundException;
 import com.jennifertellez.library.exception.DuplicateBookException;
@@ -10,6 +11,8 @@ import com.jennifertellez.library.model.ReadingStatus;
 import com.jennifertellez.library.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -134,6 +137,52 @@ public class BookServiceImpl implements BookService {
         return bookRepository.searchBooks(searchTerm).stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<BookResponse> getAllBooks(Pageable pageable) {
+        log.info("Fetching books with pagination - page: {}, size: {}",
+                pageable.getPageNumber(), pageable.getPageSize());
+
+        Page<Book> bookPage = bookRepository.findAll(pageable);
+        Page<BookResponse> responsePage = bookPage.map(this::mapToResponse);
+
+        return new PageResponse<>(responsePage);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<BookResponse> searchBooks(String searchTerm, Pageable pageable) {
+        log.info("Searching books with term: '{}', page: {}, size: {}",
+                searchTerm,pageable.getPageNumber(), pageable.getPageSize());
+
+        Page<Book> bookPage = bookRepository.searchBooks(searchTerm, pageable);
+        Page<BookResponse> responsePage = bookPage.map(this::mapToResponse);
+
+        return new PageResponse<>(responsePage);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<BookResponse> getBooksByStatus(ReadingStatus status, Pageable pageable) {
+        log.info("Fetching books with status: {}, page: {}", status, pageable.getPageNumber());
+
+        Page<Book> bookPage = bookRepository.findByStatus(status, pageable);
+        Page<BookResponse> responsePage = bookPage.map(this::mapToResponse);
+
+        return new PageResponse<>(responsePage);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<BookResponse> getBooksByAuthor(String author, Pageable pageable) {
+        log.info("Fetching books by author: {}, page: {}", author, pageable.getPageNumber());
+
+        Page<Book> bookPage = bookRepository.findByAuthorContainingIgnoreCase(author, pageable);
+        Page<BookResponse> responsePage = bookPage.map(this::mapToResponse);
+
+        return new PageResponse<>(responsePage);
     }
 
     //Helper method to map Entity to DTO

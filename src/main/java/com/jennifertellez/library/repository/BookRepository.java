@@ -2,6 +2,8 @@ package com.jennifertellez.library.repository;
 
 import com.jennifertellez.library.model.Book;
 import com.jennifertellez.library.model.ReadingStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -28,5 +30,18 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             "LOWER(b.author) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
             "LOWER(b.description) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
     List<Book> searchBooks(@Param("searchTerm") String searchTerm);
+
+    //Search books with pagination support
+    @Query("SELECT b FROM Book b WHERE " +
+            "LOWER(b.title) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(b.author) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(b.description) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+    Page<Book> searchBooks(@Param("searchTerm") String searchTerm, Pageable pageable);
+
+    //Find books by status with pagination
+    Page<Book> findByStatus(ReadingStatus status, Pageable pageable);
+
+    //Find books by author with pagination
+    Page<Book> findByAuthorContainingIgnoreCase(String author, Pageable pageable);
 
 }

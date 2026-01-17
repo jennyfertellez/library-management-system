@@ -2,6 +2,7 @@ package com.jennifertellez.library.controller;
 
 import com.jennifertellez.library.dto.BookResponse;
 import com.jennifertellez.library.dto.CreateBookRequest;
+import com.jennifertellez.library.dto.PageResponse;
 import com.jennifertellez.library.dto.UpdateBookRequest;
 import com.jennifertellez.library.model.ReadingStatus;
 import com.jennifertellez.library.service.BookService;
@@ -13,6 +14,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -55,15 +59,41 @@ public class BookController {
     }
 
     @Operation(
-            summary = "Get all books",
-            description = "Retrieves a list of all books in the library"
+            summary = "Get all books with pagination and sorting",
+            description = "Retrieves books with pagination, sorting, and optional filtering"
     )
     //Get all books in library
     @GetMapping
-    public ResponseEntity<List<BookResponse>> getAllBooks() {
-        log.info("GET /api/books - Fetching all books");
-        List<BookResponse> books = bookService.getAllBooks();
-        return ResponseEntity.ok(books);
+    public ResponseEntity<PageResponse<BookResponse>> getAllBooks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "title") String sortBy,
+            @RequestParam(defaultValue = "ASC") String direction,
+            @RequestParam(required = false) ReadingStatus status,
+            @RequestParam(required = false) String author) {
+
+        log.info("GET /api/books - page: {}, size: {}, sortBy: {}, direction: {}",
+                page, size, sortBy, direction);
+
+        Sort.Direction sortDirection = direction.equalsIgnoreCase("DESC")
+                ? Sort.Direction.DESC
+                : Sort.Direction.ASC;
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
+
+        PageResponse<BookResponse> response;
+
+        if (status != null) {
+            log.info("Filtering by status: {}", status);
+            response = bookService.getBooksByStatus(status, pageable);
+        } else if (author != null && !author.isEmpty()) {
+            log.info("Filtering by author: {}", author);
+            response = bookService.getBooksByAuthor(author, pageable);
+        } else {
+            response = bookService.getAllBooks(pageable);
+        }
+
+        return ResponseEntity.ok(response);
     }
 
     @Operation(
@@ -117,14 +147,22 @@ public class BookController {
     }
 
     @Operation(
-            summary = "Search books",
-            description = "Search books by title, author, or description"
+            summary = "Search books with pagination",
+            description = "Search books by title, author, or description with pagination support"
     )
     //Search for a specific book
     @GetMapping("/search")
-    public ResponseEntity<List<BookResponse>> searchBooks(@RequestParam String term) {
-        log.info("GET /api/books/search?term={} - Seraching books", term);
-        List<BookResponse> books = bookService.searchBooks(term);
-        return ResponseEntity.ok(books);
+    public ResponseEntity<PageResponse<BookResponse>> searchBooks(
+            @RequestParam String term,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "title") String sortBy) {
+
+        log.info("GET /api/books/search?term={}&page={}&size={} - Searching books", term, page, size);
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        PageResponse<BookResponse> response = bookService.searchBooks(term, pageable);
+
+        return ResponseEntity.ok(response);
     }
 }

@@ -53,14 +53,11 @@ public class BookServiceTest {
 
     @Test
     void createBook_Success() {
-        //Arrange
         when(bookRepository.existsByIsbn(anyString())).thenReturn(false);
         when(bookRepository.save(any(Book.class))).thenReturn(testBook);
 
-        //Act
         BookResponse response = bookService.createBook(createRequest);
 
-        //Assert
         assertNotNull(response);
         assertEquals("Test Book", response.getTitle());
         assertEquals("Test Author", response.getAuthor());
@@ -70,10 +67,8 @@ public class BookServiceTest {
 
     @Test
     void createBook_DuplicatedIsbn_ThrowsException() {
-        //Arrange
         when(bookRepository.existsByIsbn(anyString())).thenReturn(true);
 
-        //Act and Assert
         assertThrows(DuplicateBookException.class, () -> {
             bookService.createBook(createRequest);
         });
@@ -84,13 +79,10 @@ public class BookServiceTest {
 
     @Test
     void getBookById_Success() {
-        //Arrange
         when(bookRepository.findById(1L)).thenReturn(Optional.of(testBook));
 
-        //Act
         BookResponse response = bookService.getBookById(1L);
 
-        //Assert
         assertNotNull(response);
         assertEquals(1L, response.getId());
         assertEquals("Test Book", response.getTitle());
@@ -99,10 +91,8 @@ public class BookServiceTest {
 
     @Test
     void getBookById_NotFound_ThrowsException() {
-        //Arrange
         when(bookRepository.findById(999L)).thenReturn(Optional.empty());
 
-        //Act and Assert
         assertThrows(BookNotFoundException.class, () -> {
             bookService.getBookById(999L);
         });
@@ -112,14 +102,11 @@ public class BookServiceTest {
 
     @Test
     void getAllBooks_Success() {
-        //Arrange
         List<Book> books = Arrays.asList(testBook);
         when(bookRepository.findAll()).thenReturn(books);
 
-        //Act
         List<BookResponse> responses = bookService.getAllBooks();
 
-        //Assert
         assertNotNull(responses);
         assertEquals(1, responses.size());
         assertEquals("Test Book", responses.get(0).getTitle());

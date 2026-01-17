@@ -1,9 +1,6 @@
 package com.jennifertellez.library.service;
 
-import com.jennifertellez.library.dto.BookResponse;
-import com.jennifertellez.library.dto.CreateBookRequest;
-import com.jennifertellez.library.dto.PageResponse;
-import com.jennifertellez.library.dto.UpdateBookRequest;
+import com.jennifertellez.library.dto.*;
 import com.jennifertellez.library.model.BookSearchCriteria;
 import com.jennifertellez.library.model.ReadingStatus;
 import org.springframework.data.domain.Pageable;
@@ -35,5 +32,7 @@ public interface BookService {
     PageResponse<BookResponse> getBooksByAuthor(String author, Pageable pageable);
 
     PageResponse<BookResponse> advanceSearch(BookSearchCriteria criteria, Pageable pageable);
+
+    ReadingStatsResponse getReadingStatistics();
 
 }

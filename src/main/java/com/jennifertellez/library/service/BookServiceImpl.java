@@ -1,9 +1,6 @@
 package com.jennifertellez.library.service;
 
-import com.jennifertellez.library.dto.BookResponse;
-import com.jennifertellez.library.dto.CreateBookRequest;
-import com.jennifertellez.library.dto.PageResponse;
-import com.jennifertellez.library.dto.UpdateBookRequest;
+import com.jennifertellez.library.dto.*;
 import com.jennifertellez.library.exception.BookNotFoundException;
 import com.jennifertellez.library.exception.DuplicateBookException;
 import com.jennifertellez.library.model.Book;
@@ -19,7 +16,11 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.Year;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -219,4 +220,113 @@ public class BookServiceImpl implements BookService {
         response.setUpdatedAt(book.getUpdatedAt());
         return response;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ReadingStatsResponse getReadingStatistics() {
+        log.info("Calculating reading statistics");
+
+        List<Book> allBooks = bookRepository.findAll();
+        int currentYear = Year.now().getValue();
+
+        long totalBooks = allBooks.size();
+        long booksRead = allBooks.stream()
+                .filter(b -> b.getStatus() == ReadingStatus.FINISHED)
+                .count();
+        long booksToRead = allBooks.stream()
+                .filter(b -> b.getStatus() == ReadingStatus.TO_READ)
+                .count();
+        long currentlyReading = allBooks.stream()
+                .filter(b -> b.getStatus() == ReadingStatus.CURRENTLY_READING)
+                .count();
+        long booksDidNotFinish = allBooks.stream()
+                .filter(b -> b.getStatus() == ReadingStatus.DNF)
+                .count();
+
+        //Current year statistics
+        long booksReadThisYear = allBooks.stream()
+                .filter(b -> b.getFinishedDate() != null &&
+                        b.getFinishedDate().getYear() == currentYear)
+                .count();
+
+        long booksAddedThisYear = allBooks.stream()
+                .filter(b -> b.getCreatedAt() != null &&
+                        b.getCreatedAt().getYear() == currentYear)
+                .count();
+
+        //Rating statistics
+        List<Book> ratedBooks = allBooks.stream()
+                .filter(b -> b.getRating() != null)
+                .collect(Collectors.toList());
+
+        Double averageRating = ratedBooks.isEmpty() ? 0.0 :
+                ratedBooks.stream()
+                        .mapToInt(Book::getRating)
+                        .average()
+                        .orElse(0.0);
+
+        Map<Integer, Long> ratingDistribution = ratedBooks.stream()
+                .collect(Collectors.groupingBy(Book::getRating, Collectors.counting()));
+
+        // Author statistics
+        long uniqueAuthors = allBooks.stream()
+                .map(Book::getAuthor)
+                .filter(author -> author != null && !author.isEmpty())
+                .distinct()
+                .count();
+
+        Map<String, Long> topAuthors = allBooks.stream()
+                .filter(b -> b.getAuthor() != null && !b.getAuthor().isEmpty())
+                .collect(Collectors.groupingBy(Book::getAuthor, Collectors.counting()))
+                .entrySet().stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+                .limit(5)
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
+
+        // Reading pace (books per month this year)
+        int monthsElapsed = LocalDate.now().getMonthValue();
+        double booksPerMonth = monthsElapsed > 0 ?
+                (double) booksReadThisYear / monthsElapsed : 0.0;
+
+        // Average pages per book
+        double averagePagesPerBook = allBooks.stream()
+                .filter(b -> b.getPageCount() != null && b.getPageCount() > 0)
+                .mapToInt(Book::getPageCount)
+                .average()
+                .orElse(0.0);
+
+        // Books read by year
+        Map<Integer, Long> booksReadByYear = allBooks.stream()
+                .filter(b -> b.getFinishedDate() != null)
+                .collect(Collectors.groupingBy(
+                        b -> b.getFinishedDate().getYear(),
+                        Collectors.counting()
+                ));
+
+        // Build response
+        return ReadingStatsResponse.builder()
+                .totalBooks(totalBooks)
+                .booksRead(booksRead)
+                .booksToRead(booksToRead)
+                .currentlyReading(currentlyReading)
+                .booksDidNotFinish(booksDidNotFinish)
+                .currentYear(currentYear)
+                .booksReadThisYear(booksReadThisYear)
+                .booksAddedThisYear(booksAddedThisYear)
+                .averageRating(Math.round(averageRating * 10.0) / 10.0) // Round to 1 decimal
+                .ratedBooks((long) ratedBooks.size())
+                .ratingDistribution(ratingDistribution)
+                .uniqueAuthors(uniqueAuthors)
+                .topAuthors(topAuthors)
+                .booksPerMonth(Math.round(booksPerMonth * 10.0) / 10.0)
+                .averagePagesPerBook((double) Math.round(averagePagesPerBook))
+                .booksReadByYear(booksReadByYear)
+                .build();
+    }
+
 }

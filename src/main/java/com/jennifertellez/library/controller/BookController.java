@@ -1,9 +1,6 @@
 package com.jennifertellez.library.controller;
 
-import com.jennifertellez.library.dto.BookResponse;
-import com.jennifertellez.library.dto.CreateBookRequest;
-import com.jennifertellez.library.dto.PageResponse;
-import com.jennifertellez.library.dto.UpdateBookRequest;
+import com.jennifertellez.library.dto.*;
 import com.jennifertellez.library.model.BookSearchCriteria;
 import com.jennifertellez.library.model.ReadingStatus;
 import com.jennifertellez.library.service.BookService;
@@ -211,5 +208,16 @@ public class BookController {
         PageResponse<BookResponse> response = bookService.advanceSearch(criteria, pageable);
 
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            summary = "Get Reading statistics",
+            description = "Comprehensive statistics about your reading habits"
+    )
+    @GetMapping("/stats")
+    public  ResponseEntity<ReadingStatsResponse> getStatistics() {
+        log.info("GET /api/books/stats - Fetching reading statistics");
+        ReadingStatsResponse stats = bookService.getReadingStatistics();
+        return ResponseEntity.ok(stats);
     }
 }

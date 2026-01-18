@@ -294,3 +294,367 @@ Caused by: java.lang.NoSuchMethodError: 'void org.springframework.web.method.Con
 2026-01-17T19:06:55.913-08:00  INFO 13077 --- [library-management-system] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
 2026-01-17T19:06:55.915-08:00  INFO 13077 --- [library-management-system] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
 2026-01-17T19:06:55.917-08:00  INFO 13077 --- [library-management-system] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-01-17T19:19:06.440-08:00  INFO 13926 --- [library-management-system] [main] c.j.l.LibraryManagementSystemApplication : Starting LibraryManagementSystemApplication using Java 17.0.17 with PID 13926 (/Users/jennifertellez/Desktop/Projects/library-management-system/target/classes started by jennifertellez in /Users/jennifertellez/Desktop/Projects/library-management-system)
+2026-01-17T19:19:06.442-08:00 DEBUG 13926 --- [library-management-system] [main] c.j.l.LibraryManagementSystemApplication : Running with Spring Boot v3.4.1, Spring v6.2.1
+2026-01-17T19:19:06.442-08:00  INFO 13926 --- [library-management-system] [main] c.j.l.LibraryManagementSystemApplication : No active profile set, falling back to 1 default profile: "default"
+2026-01-17T19:19:06.679-08:00  INFO 13926 --- [library-management-system] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-01-17T19:19:06.701-08:00  INFO 13926 --- [library-management-system] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 18 ms. Found 2 JPA repository interfaces.
+2026-01-17T19:19:06.852-08:00  INFO 13926 --- [library-management-system] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-01-17T19:19:06.856-08:00  INFO 13926 --- [library-management-system] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-01-17T19:19:06.856-08:00  INFO 13926 --- [library-management-system] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.34]
+2026-01-17T19:19:06.875-08:00  INFO 13926 --- [library-management-system] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-01-17T19:19:06.875-08:00  INFO 13926 --- [library-management-system] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 419 ms
+2026-01-17T19:19:06.930-08:00  INFO 13926 --- [library-management-system] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-01-17T19:19:06.949-08:00  INFO 13926 --- [library-management-system] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.4.Final
+2026-01-17T19:19:06.958-08:00  INFO 13926 --- [library-management-system] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-01-17T19:19:07.036-08:00  INFO 13926 --- [library-management-system] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-01-17T19:19:07.046-08:00  INFO 13926 --- [library-management-system] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-01-17T19:19:07.111-08:00  INFO 13926 --- [library-management-system] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@2969a9a6
+2026-01-17T19:19:07.112-08:00  INFO 13926 --- [library-management-system] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-01-17T19:19:07.128-08:00  WARN 13926 --- [library-management-system] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-01-17T19:19:07.136-08:00  INFO 13926 --- [library-management-system] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 15.15
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-01-17T19:19:07.415-08:00  INFO 13926 --- [library-management-system] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-01-17T19:19:07.470-08:00  INFO 13926 --- [library-management-system] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-01-17T19:19:07.561-08:00  INFO 13926 --- [library-management-system] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-01-17T19:19:07.888-08:00  WARN 13926 --- [library-management-system] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-01-17T19:19:07.922-08:00 DEBUG 13926 --- [library-management-system] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 23 mappings in 'requestMappingHandlerMapping'
+2026-01-17T19:19:07.949-08:00 DEBUG 13926 --- [library-management-system] [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2026-01-17T19:19:07.960-08:00 DEBUG 13926 --- [library-management-system] [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2026-01-17T19:19:07.979-08:00 DEBUG 13926 --- [library-management-system] [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2026-01-17T19:19:08.028-08:00  INFO 13926 --- [library-management-system] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-01-17T19:19:08.033-08:00  INFO 13926 --- [library-management-system] [main] c.j.l.LibraryManagementSystemApplication : Started LibraryManagementSystemApplication in 1.726 seconds (process running for 1.834)
+2026-01-17T19:20:07.329-08:00  INFO 13926 --- [library-management-system] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-01-17T19:20:07.335-08:00  INFO 13926 --- [library-management-system] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-01-17T19:20:07.338-08:00  INFO 13926 --- [library-management-system] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-01-17T19:20:07.340-08:00  INFO 13926 --- [library-management-system] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-01-17T19:20:07.341-08:00  INFO 13926 --- [library-management-system] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-01-17T19:20:28.178-08:00  INFO 14263 --- [library-management-system] [main] c.j.l.LibraryManagementSystemApplication : Starting LibraryManagementSystemApplication using Java 17.0.17 with PID 14263 (/Users/jennifertellez/Desktop/Projects/library-management-system/target/classes started by jennifertellez in /Users/jennifertellez/Desktop/Projects/library-management-system)
+2026-01-17T19:20:28.179-08:00 DEBUG 14263 --- [library-management-system] [main] c.j.l.LibraryManagementSystemApplication : Running with Spring Boot v3.4.1, Spring v6.2.1
+2026-01-17T19:20:28.180-08:00  INFO 14263 --- [library-management-system] [main] c.j.l.LibraryManagementSystemApplication : No active profile set, falling back to 1 default profile: "default"
+2026-01-17T19:20:28.403-08:00  INFO 14263 --- [library-management-system] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-01-17T19:20:28.423-08:00  INFO 14263 --- [library-management-system] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 17 ms. Found 2 JPA repository interfaces.
+2026-01-17T19:20:28.574-08:00  INFO 14263 --- [library-management-system] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-01-17T19:20:28.579-08:00  INFO 14263 --- [library-management-system] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-01-17T19:20:28.579-08:00  INFO 14263 --- [library-management-system] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.34]
+2026-01-17T19:20:28.598-08:00  INFO 14263 --- [library-management-system] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-01-17T19:20:28.598-08:00  INFO 14263 --- [library-management-system] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 404 ms
+2026-01-17T19:20:28.653-08:00  INFO 14263 --- [library-management-system] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-01-17T19:20:28.672-08:00  INFO 14263 --- [library-management-system] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.4.Final
+2026-01-17T19:20:28.682-08:00  INFO 14263 --- [library-management-system] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-01-17T19:20:28.761-08:00  INFO 14263 --- [library-management-system] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-01-17T19:20:28.772-08:00  INFO 14263 --- [library-management-system] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-01-17T19:20:28.833-08:00  INFO 14263 --- [library-management-system] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@4656fcc5
+2026-01-17T19:20:28.834-08:00  INFO 14263 --- [library-management-system] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-01-17T19:20:28.849-08:00  WARN 14263 --- [library-management-system] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-01-17T19:20:28.856-08:00  INFO 14263 --- [library-management-system] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 15.15
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-01-17T19:20:29.131-08:00  INFO 14263 --- [library-management-system] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-01-17T19:20:29.180-08:00  INFO 14263 --- [library-management-system] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-01-17T19:20:29.273-08:00  INFO 14263 --- [library-management-system] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-01-17T19:20:29.594-08:00  WARN 14263 --- [library-management-system] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-01-17T19:20:29.626-08:00 DEBUG 14263 --- [library-management-system] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 23 mappings in 'requestMappingHandlerMapping'
+2026-01-17T19:20:29.652-08:00 DEBUG 14263 --- [library-management-system] [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2026-01-17T19:20:29.662-08:00 DEBUG 14263 --- [library-management-system] [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2026-01-17T19:20:29.683-08:00 DEBUG 14263 --- [library-management-system] [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2026-01-17T19:20:29.731-08:00  INFO 14263 --- [library-management-system] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-01-17T19:20:29.736-08:00  INFO 14263 --- [library-management-system] [main] c.j.l.LibraryManagementSystemApplication : Started LibraryManagementSystemApplication in 1.685 seconds (process running for 1.793)
+2026-01-17T19:22:54.664-08:00  INFO 14263 --- [library-management-system] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-01-17T19:22:54.675-08:00  INFO 14263 --- [library-management-system] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-01-17T19:22:54.680-08:00  INFO 14263 --- [library-management-system] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-01-17T19:22:54.682-08:00  INFO 14263 --- [library-management-system] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-01-17T19:22:54.684-08:00  INFO 14263 --- [library-management-system] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-01-17T23:24:12.396-08:00  INFO 15800 --- [library-management-system] [main] c.j.l.LibraryManagementSystemApplication : Starting LibraryManagementSystemApplication using Java 17.0.17 with PID 15800 (/Users/jennifertellez/Desktop/Projects/library-management-system/target/classes started by jennifertellez in /Users/jennifertellez/Desktop/Projects/library-management-system)
+2026-01-17T23:24:12.397-08:00 DEBUG 15800 --- [library-management-system] [main] c.j.l.LibraryManagementSystemApplication : Running with Spring Boot v3.4.1, Spring v6.2.1
+2026-01-17T23:24:12.397-08:00  INFO 15800 --- [library-management-system] [main] c.j.l.LibraryManagementSystemApplication : No active profile set, falling back to 1 default profile: "default"
+2026-01-17T23:24:12.668-08:00  INFO 15800 --- [library-management-system] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-01-17T23:24:12.688-08:00  INFO 15800 --- [library-management-system] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 17 ms. Found 2 JPA repository interfaces.
+2026-01-17T23:24:12.847-08:00  INFO 15800 --- [library-management-system] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-01-17T23:24:12.851-08:00  INFO 15800 --- [library-management-system] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-01-17T23:24:12.851-08:00  INFO 15800 --- [library-management-system] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.34]
+2026-01-17T23:24:12.869-08:00  INFO 15800 --- [library-management-system] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-01-17T23:24:12.869-08:00  INFO 15800 --- [library-management-system] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 455 ms
+2026-01-17T23:24:12.932-08:00  INFO 15800 --- [library-management-system] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-01-17T23:24:12.952-08:00  INFO 15800 --- [library-management-system] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.4.Final
+2026-01-17T23:24:12.963-08:00  INFO 15800 --- [library-management-system] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-01-17T23:24:13.043-08:00  INFO 15800 --- [library-management-system] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-01-17T23:24:13.052-08:00  INFO 15800 --- [library-management-system] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-01-17T23:24:13.109-08:00  INFO 15800 --- [library-management-system] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@30d5e37c
+2026-01-17T23:24:13.109-08:00  INFO 15800 --- [library-management-system] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-01-17T23:24:13.124-08:00  WARN 15800 --- [library-management-system] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-01-17T23:24:13.131-08:00  INFO 15800 --- [library-management-system] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 15.15
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-01-17T23:24:13.430-08:00  INFO 15800 --- [library-management-system] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-01-17T23:24:13.481-08:00  INFO 15800 --- [library-management-system] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-01-17T23:24:13.573-08:00  INFO 15800 --- [library-management-system] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-01-17T23:24:13.892-08:00  WARN 15800 --- [library-management-system] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-01-17T23:24:13.925-08:00 DEBUG 15800 --- [library-management-system] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 23 mappings in 'requestMappingHandlerMapping'
+2026-01-17T23:24:13.952-08:00 DEBUG 15800 --- [library-management-system] [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2026-01-17T23:24:13.964-08:00 DEBUG 15800 --- [library-management-system] [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2026-01-17T23:24:13.980-08:00 DEBUG 15800 --- [library-management-system] [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2026-01-17T23:24:14.032-08:00  INFO 15800 --- [library-management-system] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-01-17T23:24:14.037-08:00  INFO 15800 --- [library-management-system] [main] c.j.l.LibraryManagementSystemApplication : Started LibraryManagementSystemApplication in 1.799 seconds (process running for 1.953)
+2026-01-17T23:24:15.580-08:00  INFO 15800 --- [library-management-system] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-01-17T23:24:15.580-08:00  INFO 15800 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-01-17T23:24:15.580-08:00 DEBUG 15800 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2026-01-17T23:24:15.580-08:00 DEBUG 15800 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2026-01-17T23:24:15.580-08:00 DEBUG 15800 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2026-01-17T23:24:15.581-08:00 DEBUG 15800 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@7b9e4a2a
+2026-01-17T23:24:15.582-08:00 DEBUG 15800 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@47fb038d
+2026-01-17T23:24:15.582-08:00 DEBUG 15800 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2026-01-17T23:24:15.582-08:00  INFO 15800 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-01-17T23:24:15.589-08:00 DEBUG 15800 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/index.html", parameters={}
+2026-01-17T23:24:15.593-08:00 DEBUG 15800 --- [library-management-system] [http-nio-8080-exec-1] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2026-01-17T23:24:15.603-08:00 DEBUG 15800 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 304 NOT_MODIFIED
+2026-01-17T23:24:15.624-08:00 DEBUG 15800 --- [library-management-system] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-initializer.js", parameters={}
+2026-01-17T23:24:15.625-08:00 DEBUG 15800 --- [library-management-system] [http-nio-8080-exec-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2026-01-17T23:24:15.659-08:00 DEBUG 15800 --- [library-management-system] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-17T23:24:15.717-08:00 DEBUG 15800 --- [library-management-system] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/v3/api-docs/swagger-config", parameters={}
+2026-01-17T23:24:15.718-08:00 DEBUG 15800 --- [library-management-system] [http-nio-8080-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springdoc.webmvc.ui.SwaggerConfigResource#openapiJson(HttpServletRequest)
+2026-01-17T23:24:15.726-08:00 DEBUG 15800 --- [library-management-system] [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json]
+2026-01-17T23:24:15.727-08:00 DEBUG 15800 --- [library-management-system] [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Writing [{configUrl=/v3/api-docs/swagger-config, oauth2RedirectUrl=http://localhost:8080/swagger-ui/oauth2-re (truncated)...]
+2026-01-17T23:24:15.730-08:00 DEBUG 15800 --- [library-management-system] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-17T23:24:15.732-08:00 DEBUG 15800 --- [library-management-system] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/v3/api-docs", parameters={}
+2026-01-17T23:24:15.732-08:00 DEBUG 15800 --- [library-management-system] [http-nio-8080-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springdoc.webmvc.api.OpenApiWebMvcResource#openapiJson(HttpServletRequest, String, Locale)
+2026-01-17T23:24:15.817-08:00 DEBUG 15800 --- [library-management-system] [http-nio-8080-exec-4] .m.m.a.ExceptionHandlerExceptionResolver : Using @ExceptionHandler com.jennifertellez.library.exception.GlobalExceptionHandler#handleGenericException(Exception)
+2026-01-17T23:24:15.817-08:00 ERROR 15800 --- [library-management-system] [http-nio-8080-exec-4] c.j.l.exception.GlobalExceptionHandler   : Unexpected error: Handler dispatch failed: java.lang.NoSuchMethodError: 'void org.springframework.web.method.ControllerAdviceBean.<init>(java.lang.Object)'
+
+jakarta.servlet.ServletException: Handler dispatch failed: java.lang.NoSuchMethodError: 'void org.springframework.web.method.ControllerAdviceBean.<init>(java.lang.Object)'
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1103) ~[spring-webmvc-6.2.1.jar:6.2.1]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:978) ~[spring-webmvc-6.2.1.jar:6.2.1]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.2.1.jar:6.2.1]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.2.1.jar:6.2.1]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.34.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.2.1.jar:6.2.1]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.34.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.34.jar:10.1.34]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.1.jar:6.2.1]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.1.jar:6.2.1]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.1.jar:6.2.1]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
+Caused by: java.lang.NoSuchMethodError: 'void org.springframework.web.method.ControllerAdviceBean.<init>(java.lang.Object)'
+	at org.springdoc.core.service.GenericResponseService.lambda$getGenericMapResponse$8(GenericResponseService.java:702) ~[springdoc-openapi-starter-common-2.3.0.jar:2.3.0]
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:178) ~[na:na]
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:992) ~[na:na]
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509) ~[na:na]
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499) ~[na:na]
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:575) ~[na:na]
+	at java.base/java.util.stream.AbstractPipeline.evaluateToArrayNode(AbstractPipeline.java:260) ~[na:na]
+	at java.base/java.util.stream.ReferencePipeline.toArray(ReferencePipeline.java:616) ~[na:na]
+	at java.base/java.util.stream.ReferencePipeline.toArray(ReferencePipeline.java:622) ~[na:na]
+	at java.base/java.util.stream.ReferencePipeline.toList(ReferencePipeline.java:627) ~[na:na]
+	at org.springdoc.core.service.GenericResponseService.getGenericMapResponse(GenericResponseService.java:704) ~[springdoc-openapi-starter-common-2.3.0.jar:2.3.0]
+	at org.springdoc.core.service.GenericResponseService.build(GenericResponseService.java:246) ~[springdoc-openapi-starter-common-2.3.0.jar:2.3.0]
+	at org.springdoc.api.AbstractOpenApiResource.calculatePath(AbstractOpenApiResource.java:499) ~[springdoc-openapi-starter-common-2.3.0.jar:2.3.0]
+	at org.springdoc.api.AbstractOpenApiResource.calculatePath(AbstractOpenApiResource.java:676) ~[springdoc-openapi-starter-common-2.3.0.jar:2.3.0]
+	at org.springdoc.webmvc.api.OpenApiResource.lambda$calculatePath$11(OpenApiResource.java:219) ~[springdoc-openapi-starter-webmvc-api-2.3.0.jar:2.3.0]
+	at java.base/java.util.Optional.ifPresent(Optional.java:178) ~[na:na]
+	at org.springdoc.webmvc.api.OpenApiResource.calculatePath(OpenApiResource.java:200) ~[springdoc-openapi-starter-webmvc-api-2.3.0.jar:2.3.0]
+	at org.springdoc.webmvc.api.OpenApiResource.lambda$getPaths$2(OpenApiResource.java:170) ~[springdoc-openapi-starter-webmvc-api-2.3.0.jar:2.3.0]
+	at java.base/java.util.Optional.ifPresent(Optional.java:178) ~[na:na]
+	at org.springdoc.webmvc.api.OpenApiResource.getPaths(OpenApiResource.java:149) ~[springdoc-openapi-starter-webmvc-api-2.3.0.jar:2.3.0]
+	at org.springdoc.api.AbstractOpenApiResource.getOpenApi(AbstractOpenApiResource.java:353) ~[springdoc-openapi-starter-common-2.3.0.jar:2.3.0]
+	at org.springdoc.webmvc.api.OpenApiResource.openapiJson(OpenApiResource.java:124) ~[springdoc-openapi-starter-webmvc-api-2.3.0.jar:2.3.0]
+	at org.springdoc.webmvc.api.OpenApiWebMvcResource.openapiJson(OpenApiWebMvcResource.java:111) ~[springdoc-openapi-starter-webmvc-api-2.3.0.jar:2.3.0]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:257) ~[spring-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:190) ~[spring-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.2.1.jar:6.2.1]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:986) ~[spring-webmvc-6.2.1.jar:6.2.1]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:891) ~[spring-webmvc-6.2.1.jar:6.2.1]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.2.1.jar:6.2.1]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1088) ~[spring-webmvc-6.2.1.jar:6.2.1]
+	... 39 common frames omitted
+
+2026-01-17T23:24:15.821-08:00 DEBUG 15800 --- [library-management-system] [http-nio-8080-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [application/json, */*] and supported [application/json, application/*+json, application/yaml]
+2026-01-17T23:24:15.822-08:00 DEBUG 15800 --- [library-management-system] [http-nio-8080-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [ErrorResponse(message=An unexpected error occurred: Handler dispatch failed: java.lang.NoSuchMethodE (truncated)...]
+2026-01-17T23:24:15.822-08:00 DEBUG 15800 --- [library-management-system] [http-nio-8080-exec-4] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [jakarta.servlet.ServletException: Handler dispatch failed: java.lang.NoSuchMethodError: 'void org.springframework.web.method.ControllerAdviceBean.<init>(java.lang.Object)']
+2026-01-17T23:24:15.823-08:00 DEBUG 15800 --- [library-management-system] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 500 INTERNAL_SERVER_ERROR
+2026-01-17T23:24:45.224-08:00  INFO 15800 --- [library-management-system] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-01-17T23:24:45.234-08:00  INFO 15800 --- [library-management-system] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-01-17T23:24:45.237-08:00  INFO 15800 --- [library-management-system] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-01-17T23:24:45.241-08:00  INFO 15800 --- [library-management-system] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-01-17T23:24:45.243-08:00  INFO 15800 --- [library-management-system] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-01-17T23:25:26.754-08:00  INFO 15862 --- [library-management-system] [main] c.j.l.LibraryManagementSystemApplication : Starting LibraryManagementSystemApplication using Java 17.0.17 with PID 15862 (/Users/jennifertellez/Desktop/Projects/library-management-system/target/classes started by jennifertellez in /Users/jennifertellez/Desktop/Projects/library-management-system)
+2026-01-17T23:25:26.755-08:00 DEBUG 15862 --- [library-management-system] [main] c.j.l.LibraryManagementSystemApplication : Running with Spring Boot v3.4.1, Spring v6.2.1
+2026-01-17T23:25:26.755-08:00  INFO 15862 --- [library-management-system] [main] c.j.l.LibraryManagementSystemApplication : No active profile set, falling back to 1 default profile: "default"
+2026-01-17T23:25:27.010-08:00  INFO 15862 --- [library-management-system] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-01-17T23:25:27.029-08:00  INFO 15862 --- [library-management-system] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 15 ms. Found 2 JPA repository interfaces.
+2026-01-17T23:25:27.178-08:00  INFO 15862 --- [library-management-system] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-01-17T23:25:27.182-08:00  INFO 15862 --- [library-management-system] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-01-17T23:25:27.182-08:00  INFO 15862 --- [library-management-system] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.34]
+2026-01-17T23:25:27.199-08:00  INFO 15862 --- [library-management-system] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-01-17T23:25:27.199-08:00  INFO 15862 --- [library-management-system] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 429 ms
+2026-01-17T23:25:27.262-08:00  INFO 15862 --- [library-management-system] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-01-17T23:25:27.283-08:00  INFO 15862 --- [library-management-system] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.4.Final
+2026-01-17T23:25:27.293-08:00  INFO 15862 --- [library-management-system] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-01-17T23:25:27.377-08:00  INFO 15862 --- [library-management-system] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-01-17T23:25:27.385-08:00  INFO 15862 --- [library-management-system] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-01-17T23:25:27.445-08:00  INFO 15862 --- [library-management-system] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@78128dd0
+2026-01-17T23:25:27.445-08:00  INFO 15862 --- [library-management-system] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-01-17T23:25:27.458-08:00  WARN 15862 --- [library-management-system] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-01-17T23:25:27.465-08:00  INFO 15862 --- [library-management-system] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 15.15
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-01-17T23:25:27.780-08:00  INFO 15862 --- [library-management-system] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-01-17T23:25:27.833-08:00  INFO 15862 --- [library-management-system] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-01-17T23:25:27.930-08:00  INFO 15862 --- [library-management-system] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-01-17T23:25:28.259-08:00  WARN 15862 --- [library-management-system] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-01-17T23:25:28.291-08:00 DEBUG 15862 --- [library-management-system] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 23 mappings in 'requestMappingHandlerMapping'
+2026-01-17T23:25:28.317-08:00 DEBUG 15862 --- [library-management-system] [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2026-01-17T23:25:28.327-08:00 DEBUG 15862 --- [library-management-system] [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2026-01-17T23:25:28.342-08:00 DEBUG 15862 --- [library-management-system] [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2026-01-17T23:25:28.394-08:00  INFO 15862 --- [library-management-system] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-01-17T23:25:28.398-08:00  INFO 15862 --- [library-management-system] [main] c.j.l.LibraryManagementSystemApplication : Started LibraryManagementSystemApplication in 1.791 seconds (process running for 1.924)
+2026-01-17T23:25:32.872-08:00  INFO 15862 --- [library-management-system] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-01-17T23:25:32.872-08:00  INFO 15862 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-01-17T23:25:32.873-08:00 DEBUG 15862 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2026-01-17T23:25:32.873-08:00 DEBUG 15862 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2026-01-17T23:25:32.873-08:00 DEBUG 15862 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2026-01-17T23:25:32.874-08:00 DEBUG 15862 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@4b7ecd37
+2026-01-17T23:25:32.874-08:00 DEBUG 15862 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@561b21b8
+2026-01-17T23:25:32.874-08:00 DEBUG 15862 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2026-01-17T23:25:32.874-08:00  INFO 15862 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-01-17T23:25:32.879-08:00 DEBUG 15862 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/index.html", parameters={}
+2026-01-17T23:25:32.884-08:00 DEBUG 15862 --- [library-management-system] [http-nio-8080-exec-1] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2026-01-17T23:25:32.905-08:00 DEBUG 15862 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-17T23:25:32.938-08:00 DEBUG 15862 --- [library-management-system] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-initializer.js", parameters={}
+2026-01-17T23:25:32.939-08:00 DEBUG 15862 --- [library-management-system] [http-nio-8080-exec-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2026-01-17T23:25:32.961-08:00 DEBUG 15862 --- [library-management-system] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-17T23:25:33.009-08:00 DEBUG 15862 --- [library-management-system] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/v3/api-docs/swagger-config", parameters={}
+2026-01-17T23:25:33.014-08:00 DEBUG 15862 --- [library-management-system] [http-nio-8080-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springdoc.webmvc.ui.SwaggerConfigResource#openapiJson(HttpServletRequest)
+2026-01-17T23:25:33.038-08:00 DEBUG 15862 --- [library-management-system] [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json]
+2026-01-17T23:25:33.065-08:00 DEBUG 15862 --- [library-management-system] [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Writing [{configUrl=/v3/api-docs/swagger-config, oauth2RedirectUrl=http://localhost:8080/swagger-ui/oauth2-re (truncated)...]
+2026-01-17T23:25:33.068-08:00 DEBUG 15862 --- [library-management-system] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-17T23:25:33.072-08:00 DEBUG 15862 --- [library-management-system] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/v3/api-docs", parameters={}
+2026-01-17T23:25:33.072-08:00 DEBUG 15862 --- [library-management-system] [http-nio-8080-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springdoc.webmvc.api.OpenApiWebMvcResource#openapiJson(HttpServletRequest, String, Locale)
+2026-01-17T23:25:33.354-08:00  INFO 15862 --- [library-management-system] [http-nio-8080-exec-4] o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 272 ms
+2026-01-17T23:25:33.362-08:00 DEBUG 15862 --- [library-management-system] [http-nio-8080-exec-4] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, */*] and supported [application/json]
+2026-01-17T23:25:33.363-08:00 DEBUG 15862 --- [library-management-system] [http-nio-8080-exec-4] m.m.a.RequestResponseBodyMethodProcessor : Writing [{123, 34, 111, 112, 101, 110, 97, 112, 105, 34, 58, 34, 51, 46, 48, 46, 49, 34, 44, 34, 105, 110, 10 (truncated)...]
+2026-01-17T23:25:33.363-08:00 DEBUG 15862 --- [library-management-system] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-17T23:25:38.245-08:00  INFO 15862 --- [library-management-system] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-01-17T23:25:38.251-08:00  INFO 15862 --- [library-management-system] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-01-17T23:25:38.253-08:00  INFO 15862 --- [library-management-system] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-01-17T23:25:38.255-08:00  INFO 15862 --- [library-management-system] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-01-17T23:25:38.256-08:00  INFO 15862 --- [library-management-system] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-01-17T23:26:42.080-08:00  INFO 16201 --- [library-management-system] [main] c.j.l.LibraryManagementSystemApplication : Starting LibraryManagementSystemApplication using Java 17.0.17 with PID 16201 (/Users/jennifertellez/Desktop/Projects/library-management-system/target/classes started by jennifertellez in /Users/jennifertellez/Desktop/Projects/library-management-system)
+2026-01-17T23:26:42.082-08:00 DEBUG 16201 --- [library-management-system] [main] c.j.l.LibraryManagementSystemApplication : Running with Spring Boot v3.4.1, Spring v6.2.1
+2026-01-17T23:26:42.082-08:00  INFO 16201 --- [library-management-system] [main] c.j.l.LibraryManagementSystemApplication : No active profile set, falling back to 1 default profile: "default"
+2026-01-17T23:26:42.328-08:00  INFO 16201 --- [library-management-system] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-01-17T23:26:42.348-08:00  INFO 16201 --- [library-management-system] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 17 ms. Found 2 JPA repository interfaces.
+2026-01-17T23:26:42.502-08:00  INFO 16201 --- [library-management-system] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-01-17T23:26:42.506-08:00  INFO 16201 --- [library-management-system] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-01-17T23:26:42.507-08:00  INFO 16201 --- [library-management-system] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.34]
+2026-01-17T23:26:42.525-08:00  INFO 16201 --- [library-management-system] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-01-17T23:26:42.525-08:00  INFO 16201 --- [library-management-system] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 429 ms
+2026-01-17T23:26:42.581-08:00  INFO 16201 --- [library-management-system] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-01-17T23:26:42.599-08:00  INFO 16201 --- [library-management-system] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.4.Final
+2026-01-17T23:26:42.609-08:00  INFO 16201 --- [library-management-system] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-01-17T23:26:42.695-08:00  INFO 16201 --- [library-management-system] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-01-17T23:26:42.704-08:00  INFO 16201 --- [library-management-system] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-01-17T23:26:42.769-08:00  INFO 16201 --- [library-management-system] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@5b4954b2
+2026-01-17T23:26:42.770-08:00  INFO 16201 --- [library-management-system] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-01-17T23:26:42.784-08:00  WARN 16201 --- [library-management-system] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-01-17T23:26:42.795-08:00  INFO 16201 --- [library-management-system] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 15.15
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-01-17T23:26:43.082-08:00  INFO 16201 --- [library-management-system] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-01-17T23:26:43.121-08:00  INFO 16201 --- [library-management-system] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-01-17T23:26:43.214-08:00  INFO 16201 --- [library-management-system] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-01-17T23:26:43.540-08:00  WARN 16201 --- [library-management-system] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-01-17T23:26:43.574-08:00 DEBUG 16201 --- [library-management-system] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 23 mappings in 'requestMappingHandlerMapping'
+2026-01-17T23:26:43.607-08:00 DEBUG 16201 --- [library-management-system] [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2026-01-17T23:26:43.619-08:00 DEBUG 16201 --- [library-management-system] [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2026-01-17T23:26:43.636-08:00 DEBUG 16201 --- [library-management-system] [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2026-01-17T23:26:43.690-08:00  INFO 16201 --- [library-management-system] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-01-17T23:26:43.694-08:00  INFO 16201 --- [library-management-system] [main] c.j.l.LibraryManagementSystemApplication : Started LibraryManagementSystemApplication in 1.758 seconds (process running for 1.879)
+2026-01-17T23:27:32.682-08:00  INFO 16201 --- [library-management-system] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-01-17T23:27:32.684-08:00  INFO 16201 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-01-17T23:27:32.684-08:00 DEBUG 16201 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2026-01-17T23:27:32.684-08:00 DEBUG 16201 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2026-01-17T23:27:32.684-08:00 DEBUG 16201 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2026-01-17T23:27:32.688-08:00 DEBUG 16201 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@1e1c1634
+2026-01-17T23:27:32.688-08:00 DEBUG 16201 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@1cb83205
+2026-01-17T23:27:32.688-08:00 DEBUG 16201 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2026-01-17T23:27:32.688-08:00  INFO 16201 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 4 ms
+2026-01-17T23:27:32.696-08:00 DEBUG 16201 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/index.html", parameters={}
+2026-01-17T23:27:32.703-08:00 DEBUG 16201 --- [library-management-system] [http-nio-8080-exec-1] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2026-01-17T23:27:32.724-08:00 DEBUG 16201 --- [library-management-system] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 304 NOT_MODIFIED
+2026-01-17T23:27:32.760-08:00 DEBUG 16201 --- [library-management-system] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-initializer.js", parameters={}
+2026-01-17T23:27:32.761-08:00 DEBUG 16201 --- [library-management-system] [http-nio-8080-exec-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2026-01-17T23:27:32.795-08:00 DEBUG 16201 --- [library-management-system] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-17T23:27:32.851-08:00 DEBUG 16201 --- [library-management-system] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/v3/api-docs/swagger-config", parameters={}
+2026-01-17T23:27:32.854-08:00 DEBUG 16201 --- [library-management-system] [http-nio-8080-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springdoc.webmvc.ui.SwaggerConfigResource#openapiJson(HttpServletRequest)
+2026-01-17T23:27:32.867-08:00 DEBUG 16201 --- [library-management-system] [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json]
+2026-01-17T23:27:32.875-08:00 DEBUG 16201 --- [library-management-system] [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Writing [{configUrl=/v3/api-docs/swagger-config, oauth2RedirectUrl=http://localhost:8080/swagger-ui/oauth2-re (truncated)...]
+2026-01-17T23:27:32.879-08:00 DEBUG 16201 --- [library-management-system] [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-17T23:27:32.884-08:00 DEBUG 16201 --- [library-management-system] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/v3/api-docs", parameters={}
+2026-01-17T23:27:32.884-08:00 DEBUG 16201 --- [library-management-system] [http-nio-8080-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springdoc.webmvc.api.OpenApiWebMvcResource#openapiJson(HttpServletRequest, String, Locale)
+2026-01-17T23:27:33.097-08:00  INFO 16201 --- [library-management-system] [http-nio-8080-exec-4] o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 204 ms
+2026-01-17T23:27:33.103-08:00 DEBUG 16201 --- [library-management-system] [http-nio-8080-exec-4] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, */*] and supported [application/json]
+2026-01-17T23:27:33.104-08:00 DEBUG 16201 --- [library-management-system] [http-nio-8080-exec-4] m.m.a.RequestResponseBodyMethodProcessor : Writing [{123, 34, 111, 112, 101, 110, 97, 112, 105, 34, 58, 34, 51, 46, 48, 46, 49, 34, 44, 34, 105, 110, 10 (truncated)...]
+2026-01-17T23:27:33.104-08:00 DEBUG 16201 --- [library-management-system] [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-01-17T23:32:32.091-08:00  INFO 16201 --- [library-management-system] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-01-17T23:32:32.104-08:00  INFO 16201 --- [library-management-system] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-01-17T23:32:32.110-08:00  INFO 16201 --- [library-management-system] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-01-17T23:32:32.113-08:00  INFO 16201 --- [library-management-system] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-01-17T23:32:32.115-08:00  INFO 16201 --- [library-management-system] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

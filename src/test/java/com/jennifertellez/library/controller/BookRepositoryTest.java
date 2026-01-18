@@ -1,7 +1,6 @@
-package com.jennifertellez.library.repository;
+package com.jennifertellez.library.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jennifertellez.library.controller.BookController;
 import com.jennifertellez.library.dto.BookResponse;
 import com.jennifertellez.library.dto.CreateBookRequest;
 import com.jennifertellez.library.dto.PageResponse;
@@ -35,7 +34,7 @@ class BookControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @MockitoBean  // ← NEW annotation
+    @MockitoBean
     private BookService bookService;
 
     @MockitoBean

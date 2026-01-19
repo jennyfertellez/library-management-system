@@ -1,6 +1,11 @@
 import { api } from './api';
-import { Book, CreateBookRequest, UpdateBookRequest, PageResponse } from '../types/book';
-import { ReadingStats } from '../types/stats';
+import { ReadingStatus } from '../types/book';
+import type {
+  Book,
+  CreateBookRequest,
+  UpdateBookRequest,
+  PageResponse
+} from '../types/book';
 
 export const bookService = {
   // Get all books with pagination

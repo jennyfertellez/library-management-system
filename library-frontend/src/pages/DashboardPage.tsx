@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { bookService } from '../services/bookService';
-import { ReadingStats } from '../types/stats';
+import type { ReadingStats } from '../types/stats';
 import StatsCard from '../components/StatsCard';
 import { BookOpen, BookMarked, BookCheck, TrendingUp, Star, Users } from 'lucide-react';
 

@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { bookService } from '../services/bookService';
 import type { Book } from '../types/book';
 import EditBookModal from '../components/EditBookModal';
+import DeleteConfirmModal from '../components/DeleteConfirmModal';
 import { ReadingStatus } from '../types/book';
 import { ArrowLeft, Edit, Trash2, Star, Calendar, BookOpen } from 'lucide-react';
 
@@ -27,6 +28,7 @@ const BookDetailPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchBook = async () => {
@@ -115,12 +117,22 @@ const BookDetailPage: React.FC = () => {
                   <Edit className="h-5 w-5" />
                 </button>
                 <button
-                  onClick={() => {/* We'll add this in Part 3 */}}
+                  onClick={() => setIsDeleteModalOpen(true)}
                   className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
                   title="Delete book"
                 >
                   <Trash2 className="h-5 w-5" />
                 </button>
+                <DeleteConfirmModal
+                   isOpen={isDeleteModalOpen}
+                   title="Delete Book"
+                   message={`Are you sure you want to delete "${book.title}"? This action cannot be undone.`}
+                   onConfirm={async () => {
+                     await bookService.deleteBook(book.id);
+                     navigate('/books');
+                   }}
+                   onCancel={() => setIsDeleteModalOpen(false)}
+                 />
               </div>
             </div>
 

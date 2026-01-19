@@ -1,4 +1,4 @@
-import { Book } from './book';
+import type { Book } from '../types/book';
 
 export interface Shelf {
     id: number;

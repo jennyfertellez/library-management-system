@@ -1,5 +1,5 @@
 import { api } from './api';
-import { Shelf, CreateShelfRequest, UpdateShelfRequest } from '../types/shelf';
+import type { Shelf, CreateShelfRequest, UpdateShelfRequest } from '../types/shelf';
 
 export const shelfService = {
   // Get all shelves

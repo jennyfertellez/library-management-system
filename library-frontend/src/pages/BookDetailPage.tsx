@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { bookService } from '../services/bookService';
 import type { Book } from '../types/book';
+import EditBookModal from '../components/EditBookModal';
 import { ReadingStatus } from '../types/book';
 import { ArrowLeft, Edit, Trash2, Star, Calendar, BookOpen } from 'lucide-react';
 
@@ -25,6 +26,7 @@ const BookDetailPage: React.FC = () => {
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchBook = async () => {
@@ -106,7 +108,7 @@ const BookDetailPage: React.FC = () => {
               </div>
               <div className="flex gap-2">
                 <button
-                  onClick={() => {/* We'll add this in Part 2 */}}
+                  onClick={() => setIsEditModalOpen(true)}
                   className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
                   title="Edit book"
                 >
@@ -200,6 +202,17 @@ const BookDetailPage: React.FC = () => {
           </div>
         </div>
       </div>
+      <EditBookModal
+         book={book}
+         isOpen={isEditModalOpen}
+         onClose={() => setIsEditModalOpen(false)}
+         onBookUpdated={() => {
+           // Refresh book data
+           if (id) {
+             bookService.getBookById(parseInt(id)).then(setBook);
+           }
+         }}
+       />
     </div>
   );
 };

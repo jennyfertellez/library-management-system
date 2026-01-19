@@ -3,6 +3,9 @@ import { bookService } from '../services/bookService';
 import type { Book, PageResponse } from '../types/book';
 import BookCard from '../components/BookCard';
 import { Plus, Search, BookOpen } from 'lucide-react';
+import SearchBar from '../components/SearchBar';
+import StatusFilter from '../components/StatusFilter';
+import { ReadingStatus } from '../types/book';
 
 const BookListPage: React.FC = () => {
   const [books, setBooks] = useState<Book[]>([]);
@@ -11,26 +14,37 @@ const BookListPage: React.FC = () => {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [totalBooks, setTotalBooks] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState<ReadingStatus | 'ALL'>('ALL');
 
-  const fetchBooks = async (pageNum: number) => {
-    try {
-      setLoading(true);
-      const response: PageResponse<Book> = await bookService.getAllBooks(pageNum, 20);
-      setBooks(response.content);
-      setTotalPages(response.totalPages);
-      setTotalBooks(response.totalElements);
-      setError(null);
-    } catch (err) {
-      console.error('Error fetching books:', err);
-      setError('Failed to load books. Make sure your backend is running.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const fetchBooks = async (pageNum: number, search?: string, status?: ReadingStatus | 'ALL') => {
+          try {
+            setLoading(true);
+            let response: PageResponse<Book>;
+
+            if (search) {
+              response = await bookService.searchBooks(search, pageNum, 20);
+            } else if (status && status !== 'ALL') {
+              response = await bookService.getBooksByStatus(status, pageNum, 20);
+            } else {
+              response = await bookService.getAllBooks(pageNum, 20);
+            }
+
+            setBooks(response.content);
+            setTotalPages(response.totalPages);
+            setTotalBooks(response.totalElements);
+            setError(null);
+          } catch (err) {
+            console.error('Error fetching books:', err);
+            setError('Failed to load books.');
+          } finally {
+            setLoading(false);
+          }
+        };
 
   useEffect(() => {
-    fetchBooks(page);
-  }, [page]);
+    fetchBooks(page, searchTerm, selectedStatus);
+  }, [page, searchTerm, selectedStatus]);
 
   if (loading) {
     return (
@@ -74,6 +88,22 @@ const BookListPage: React.FC = () => {
         </div>
       ) : (
         <>
+
+      {/* Search and Filters */}
+       <div className="mb-6 space-y-4">
+         <SearchBar onSearch={(term) => {
+           setSearchTerm(term);
+           setPage(0);
+         }} />
+         <StatusFilter
+           currentStatus={selectedStatus}
+           onStatusChange={(status) => {
+             setSelectedStatus(status);
+             setPage(0);
+           }}
+         />
+       </div>
+
           {/* Book Grid */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {books.map((book) => (

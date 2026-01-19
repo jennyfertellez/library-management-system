@@ -6,6 +6,7 @@
   ],
 
   "compilerOptions": {
+    "preserveValueImports": true,
     "importsNotUsedAsValues": "error"
   }
 }

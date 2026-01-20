@@ -1,11 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import {
+  ArrowLeft,
+  Edit,
+  Trash2,
+  Star,
+  Calendar,
+  BookOpen,
+} from 'lucide-react';
+
 import { bookService } from '../services/bookService';
+import { shelfService } from '../services/shelfService';
+
 import type { Book } from '../types/book';
+import type { Shelf } from '../types/shelf';
+import { ReadingStatus } from '../types/book';
+
 import EditBookModal from '../components/EditBookModal';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
-import { ReadingStatus } from '../types/book';
-import { ArrowLeft, Edit, Trash2, Star, Calendar, BookOpen } from 'lucide-react';
 
 const statusColors = {
   [ReadingStatus.TO_READ]: 'bg-blue-100 text-blue-800',
@@ -24,19 +36,25 @@ const statusLabels = {
 const BookDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+
   const [book, setBook] = useState<Book | null>(null);
+  const [shelves, setShelves] = useState<Shelf[]>([]);
+  const [showShelfDropdown, setShowShelfDropdown] = useState(false);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+  /* Fetch book */
   useEffect(() => {
-    const fetchBook = async () => {
-      if (!id) return;
+    if (!id) return;
 
+    const fetchBook = async () => {
       try {
         setLoading(true);
-        const data = await bookService.getBookById(parseInt(id));
+        const data = await bookService.getBookById(Number(id));
         setBook(data);
         setError(null);
       } catch (err) {
@@ -50,22 +68,54 @@ const BookDetailPage: React.FC = () => {
     fetchBook();
   }, [id]);
 
+  /* Fetch shelves */
+  useEffect(() => {
+    const fetchShelves = async () => {
+      try {
+        const data = await shelfService.getAllShelves();
+        setShelves(data);
+      } catch (err) {
+        console.error('Error fetching shelves:', err);
+      }
+    };
+
+    fetchShelves();
+  }, []);
+
+  const addToShelf = async (shelfId: number) => {
+    if (!book) return;
+
+    try {
+      await shelfService.addBookToShelf(shelfId, book.id);
+      setShowShelfDropdown(false);
+      alert('Book added to shelf');
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Failed to add book to shelf');
+    }
+  };
+
+  /* Loading */
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="flex h-64 items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600" />
       </div>
     );
   }
 
+  /* Error */
   if (error || !book) {
     return (
       <div>
-        <Link to="/books" className="flex items-center text-blue-600 hover:text-blue-700 mb-4">
-          <ArrowLeft className="h-4 w-4 mr-2" />
+        <Link
+          to="/books"
+          className="mb-4 flex items-center text-blue-600 hover:text-blue-700"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Books
         </Link>
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4">
           <p className="text-red-800">{error || 'Book not found'}</p>
         </div>
       </div>
@@ -75,156 +125,199 @@ const BookDetailPage: React.FC = () => {
   return (
     <div>
       {/* Back Button */}
-      <Link to="/books" className="flex items-center text-blue-600 hover:text-blue-700 mb-6">
-        <ArrowLeft className="h-4 w-4 mr-2" />
+      <Link
+        to="/books"
+        className="mb-6 flex items-center text-blue-600 hover:text-blue-700"
+      >
+        <ArrowLeft className="mr-2 h-4 w-4" />
         Back to Books
       </Link>
 
-      {/* Book Detail Card */}
-      <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+      {/* Book Card */}
+      <div className="overflow-hidden rounded-lg bg-white shadow-lg">
         <div className="md:flex">
-          {/* Book Cover */}
-          <div className="md:w-1/3 lg:w-1/4 bg-gray-100 flex items-center justify-center p-8">
+          {/* Cover */}
+          <div className="flex items-center justify-center bg-gray-100 p-8 md:w-1/3 lg:w-1/4">
             {book.thumbnailUrl ? (
               <img
                 src={book.thumbnailUrl}
                 alt={book.title}
-                className="max-w-full h-auto rounded-lg shadow-md"
+                className="h-auto max-w-full rounded-lg shadow-md"
               />
             ) : (
-              <div className="w-48 h-64 bg-gray-200 rounded-lg flex items-center justify-center">
+              <div className="flex h-64 w-48 items-center justify-center rounded-lg bg-gray-200">
                 <BookOpen className="h-16 w-16 text-gray-400" />
               </div>
             )}
           </div>
 
-          {/* Book Info */}
-          <div className="md:w-2/3 lg:w-3/4 p-8">
-            {/* Title and Actions */}
-            <div className="flex justify-between items-start mb-4">
+          {/* Info */}
+          <div className="p-8 md:w-2/3 lg:w-3/4">
+            {/* Title + Actions */}
+            <div className="mb-4 flex items-start justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">{book.title}</h1>
+                <h1 className="mb-2 text-3xl font-bold text-gray-900">
+                  {book.title}
+                </h1>
                 {book.author && (
                   <p className="text-xl text-gray-600">by {book.author}</p>
                 )}
               </div>
+
               <div className="flex gap-2">
                 <button
                   onClick={() => setIsEditModalOpen(true)}
-                  className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
-                  title="Edit book"
+                  className="rounded-lg p-2 text-blue-600 hover:bg-blue-50"
                 >
                   <Edit className="h-5 w-5" />
                 </button>
+
                 <button
                   onClick={() => setIsDeleteModalOpen(true)}
-                  className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
-                  title="Delete book"
+                  className="rounded-lg p-2 text-red-600 hover:bg-red-50"
                 >
                   <Trash2 className="h-5 w-5" />
                 </button>
-                <DeleteConfirmModal
-                   isOpen={isDeleteModalOpen}
-                   title="Delete Book"
-                   message={`Are you sure you want to delete "${book.title}"? This action cannot be undone.`}
-                   onConfirm={async () => {
-                     await bookService.deleteBook(book.id);
-                     navigate('/books');
-                   }}
-                   onCancel={() => setIsDeleteModalOpen(false)}
-                 />
+
+                {/* Add to shelf */}
+                <div className="relative">
+                  <button
+                    onClick={() => setShowShelfDropdown((v) => !v)}
+                    className="rounded-lg bg-gray-100 px-4 py-2 text-gray-700 hover:bg-gray-200"
+                  >
+                    Add to Shelf
+                  </button>
+
+                  {showShelfDropdown && (
+                    <div className="absolute right-0 z-10 mt-2 w-56 rounded-lg border bg-white shadow-lg">
+                      {shelves.length === 0 ? (
+                        <p className="p-3 text-sm text-gray-500">
+                          No shelves yet
+                        </p>
+                      ) : (
+                        shelves.map((shelf) => (
+                          <button
+                            key={shelf.id}
+                            onClick={() => addToShelf(shelf.id)}
+                            className="w-full rounded px-3 py-2 text-left text-sm hover:bg-gray-100"
+                          >
+                            {shelf.name}
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
-            {/* Status Badge */}
+            {/* Status */}
             <div className="mb-6">
-              <span className={`inline-block px-4 py-2 rounded-full text-sm font-medium ${statusColors[book.status]}`}>
+              <span
+                className={`inline-block rounded-full px-4 py-2 text-sm font-medium ${statusColors[book.status]}`}
+              >
                 {statusLabels[book.status]}
               </span>
             </div>
 
-            {/* Meta Information */}
-            <div className="grid grid-cols-2 gap-4 mb-6">
+            {/* Metadata */}
+            <div className="mb-6 grid grid-cols-2 gap-4">
               {book.isbn && (
                 <div>
                   <p className="text-sm text-gray-600">ISBN</p>
-                  <p className="font-medium text-gray-900">{book.isbn}</p>
+                  <p className="font-medium">{book.isbn}</p>
                 </div>
               )}
+
               {book.publishedDate && (
                 <div>
                   <p className="text-sm text-gray-600">Published</p>
-                  <p className="font-medium text-gray-900">{book.publishedDate}</p>
+                  <p className="font-medium">{book.publishedDate}</p>
                 </div>
               )}
+
               {book.pageCount && (
                 <div>
                   <p className="text-sm text-gray-600">Pages</p>
-                  <p className="font-medium text-gray-900">{book.pageCount}</p>
+                  <p className="font-medium">{book.pageCount}</p>
                 </div>
               )}
+
               {book.rating && (
                 <div>
                   <p className="text-sm text-gray-600">Rating</p>
                   <div className="flex items-center">
-                    <Star className="h-5 w-5 text-yellow-500 fill-yellow-500 mr-1" />
-                    <span className="font-medium text-gray-900">{book.rating}/5</span>
+                    <Star className="mr-1 h-5 w-5 fill-yellow-500 text-yellow-500" />
+                    <span className="font-medium">{book.rating}/5</span>
                   </div>
                 </div>
               )}
             </div>
 
-            {/* Finished Date */}
             {book.finishedDate && (
-              <div className="mb-6">
-                <div className="flex items-center text-gray-600">
-                  <Calendar className="h-4 w-4 mr-2" />
-                  <span className="text-sm">
-                    Finished on {new Date(book.finishedDate).toLocaleDateString()}
-                  </span>
-                </div>
+              <div className="mb-6 flex items-center text-gray-600">
+                <Calendar className="mr-2 h-4 w-4" />
+                Finished on{' '}
+                {new Date(book.finishedDate).toLocaleDateString()}
               </div>
             )}
 
-            {/* Description */}
             {book.description && (
               <div className="mb-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-2">Description</h2>
-                <p className="text-gray-700 leading-relaxed">{book.description}</p>
+                <h2 className="mb-2 text-lg font-semibold">Description</h2>
+                <p className="leading-relaxed text-gray-700">
+                  {book.description}
+                </p>
               </div>
             )}
 
-            {/* Notes */}
             {book.notes && (
               <div className="mb-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-2">My Notes</h2>
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                  <p className="text-gray-700 whitespace-pre-wrap">{book.notes}</p>
+                <h2 className="mb-2 text-lg font-semibold">My Notes</h2>
+                <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">
+                  <p className="whitespace-pre-wrap text-gray-700">
+                    {book.notes}
+                  </p>
                 </div>
               </div>
             )}
 
-            {/* Timestamps */}
-            <div className="text-sm text-gray-500 pt-4 border-t">
+            <div className="border-t pt-4 text-sm text-gray-500">
               <p>Added: {new Date(book.createdAt).toLocaleDateString()}</p>
               {book.updatedAt !== book.createdAt && (
-                <p>Updated: {new Date(book.updatedAt).toLocaleDateString()}</p>
+                <p>
+                  Updated:{' '}
+                  {new Date(book.updatedAt).toLocaleDateString()}
+                </p>
               )}
             </div>
           </div>
         </div>
       </div>
+
+      {/* Modals */}
       <EditBookModal
-         book={book}
-         isOpen={isEditModalOpen}
-         onClose={() => setIsEditModalOpen(false)}
-         onBookUpdated={() => {
-           // Refresh book data
-           if (id) {
-             bookService.getBookById(parseInt(id)).then(setBook);
-           }
-         }}
-       />
+        book={book}
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onBookUpdated={async () => {
+          if (id) {
+            const updated = await bookService.getBookById(Number(id));
+            setBook(updated);
+          }
+        }}
+      />
+
+      <DeleteConfirmModal
+        isOpen={isDeleteModalOpen}
+        title="Delete Book"
+        message={`Are you sure you want to delete "${book.title}"? This action cannot be undone.`}
+        onConfirm={async () => {
+          await bookService.deleteBook(book.id);
+          navigate('/books');
+        }}
+        onCancel={() => setIsDeleteModalOpen(false)}
+      />
     </div>
   );
 };

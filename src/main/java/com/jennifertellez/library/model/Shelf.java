@@ -1,11 +1,10 @@
 package com.jennifertellez.library.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -14,9 +13,12 @@ import java.util.Set;
 
 @Entity
 @Table(name = "shelves")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = "books")
+@EqualsAndHashCode(exclude = "books")
 public class Shelf {
 
     @Id
@@ -36,6 +38,7 @@ public class Shelf {
             joinColumns = @JoinColumn(name = "shelf_id"),
             inverseJoinColumns = @JoinColumn(name = "book_id")
     )
+    @JsonIgnore
     private Set<Book> books = new HashSet<>();
 
     @CreationTimestamp

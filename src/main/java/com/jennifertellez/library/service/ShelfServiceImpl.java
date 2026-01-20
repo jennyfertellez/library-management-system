@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -104,11 +106,26 @@ public class ShelfServiceImpl implements ShelfService {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new BookNotFoundException(bookId));
 
-        shelf.addBook(book);
-        shelfRepository.save(shelf);
+        if (shelf.getBooks() == null) {
+            shelf.setBooks(new HashSet<>());
+        }
+        if (book.getShelves() == null) {
+            book.setShelves(new HashSet<>());
+        }
 
-        log.info("Book {} added to shelf {}", bookId, shelfId);
-        return mapToResponse(shelf);
+        if (shelf.getBooks().contains(book)) {
+            log.info("Book {} already in shelf {}", bookId, shelfId);
+            return mapToResponse(shelf);
+        }
+
+        shelf.getBooks().add(book);
+        book.getShelves().add(shelf);
+
+        bookRepository.save(book);
+        Shelf savedShelf = shelfRepository.save(shelf);
+
+        log.info("Successfully added book {} to shelf {}", bookId, shelfId);
+        return mapToResponse(savedShelf);
     }
 
     @Override
@@ -136,18 +153,31 @@ public class ShelfServiceImpl implements ShelfService {
         response.setBookCount(shelf.getBooks().size());
         response.setCreatedAt(shelf.getCreatedAt());
 
-        //Map books to BookResponse
-        List<BookResponse> bookResponses = shelf.getBooks().stream()
-                .map(book -> {
-                    BookResponse bookResponse = new BookResponse();
-                    bookResponse.setId(book.getId());
-                    bookResponse.setTitle(book.getTitle());
-                    bookResponse.setAuthor(book.getAuthor());
-                    bookResponse.setIsbn(book.getIsbn());
-                    bookResponse.setStatus(book.getStatus());
-                    return bookResponse;
-                })
-                .collect(Collectors.toList());
+        if (shelf.getBooks() == null) {
+            response.setBookCount(0);
+            response.setBooks(new ArrayList<>());
+            return response;
+        }
+
+        List<BookResponse> bookResponses = new ArrayList<>();
+        for (Book book : shelf.getBooks()) {
+            BookResponse bookResponse = new BookResponse();
+            bookResponse.setId(book.getId());
+            bookResponse.setTitle(book.getTitle());
+            bookResponse.setAuthor(book.getAuthor());
+            bookResponse.setIsbn(book.getIsbn());
+            bookResponse.setStatus(book.getStatus());
+            bookResponse.setRating(book.getRating());
+            bookResponse.setDescription(book.getDescription());
+            bookResponse.setPublishedDate(book.getPublishedDate());
+            bookResponse.setPageCount(book.getPageCount());
+            bookResponse.setThumbnailUrl(book.getThumbnail());
+            bookResponse.setFinishedDate(book.getFinishedDate());
+            bookResponse.setNotes(book.getNotes());
+            bookResponse.setCreatedAt(book.getCreatedAt());
+            bookResponse.setUpdatedAt(book.getUpdatedAt());
+            bookResponses.add(bookResponse);
+        }
 
         response.setBooks(bookResponses);
         return response;

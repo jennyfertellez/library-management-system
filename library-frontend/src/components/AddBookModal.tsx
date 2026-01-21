@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, BookOpen, Barcode } from 'lucide-react';
 import type { CreateBookRequest } from '../types/book';
 import { ReadingStatus } from '../types/book';
@@ -25,8 +25,44 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
     status: ReadingStatus.TO_READ,
   });
 
+  useEffect(() => {
+      const handleEscape = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          onClose();
+        }
+      };
+
+      if (isOpen) {
+        document.addEventListener('keydown', handleEscape);
+      }
+
+      return () => {
+        document.removeEventListener('keydown', handleEscape);
+      };
+    }, [isOpen, onClose]);
+
+  const validateForm = () => {
+    const newErrors: { [key: string]: string } = {};
+
+    if (!formData.title.trim()) {
+      newErrors.title = 'Title is required';
+    }
+
+    if (formData.isbn && !/^\d{10}(\d{3})?$/.test(formData.isbn)) {
+      newErrors.isbn = 'ISBN must be 10 or 13 digits';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+        return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -41,6 +77,7 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
       setLoading(false);
     }
   };
+
 
   const handleIsbnLookup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,7 +106,9 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
     });
     setIsbn('');
     setError(null);
+    setErrors({});
   };
+
 
   if (!isOpen) return null;
 
@@ -156,9 +195,10 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
                 <input
                   type="text"
                   value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  required
+                  onChange={(e) => {
+                    setFormData({ ...formData, title: e.target.value });
+                    if (errors.title) setErrors({ ...errors, title: '' });
+                  }}
                 />
               </div>
 
@@ -181,7 +221,10 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
                 <input
                   type="text"
                   value={formData.isbn}
-                  onChange={(e) => setFormData({ ...formData, isbn: e.target.value })}
+                  onChange={(e) => {
+                    setFormData({ ...formData, isbn: e.target.value });
+                    if (errors.isbn) setErrors({ ...errors, isbn: '' });
+                  }}
                   placeholder="9780547928227"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 />

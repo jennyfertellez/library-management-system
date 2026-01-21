@@ -17,6 +17,8 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
   const [formData, setFormData] = useState<CreateBookRequest>({
     title: '',
     author: '',

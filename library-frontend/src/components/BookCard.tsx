@@ -25,7 +25,7 @@ const statusLabels = {
 const BookCard: React.FC<BookCardProps> = ({ book }) => {
   return (
     <Link to={`/books/${book.id}`}>
-      <div className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-4 cursor-pointer">
+      <div className="bg-white rounded-lg shadow hover:shadow-xl transition-all duration-300 p-4 cursor-pointer transform hover:-translate-y-1">
         {/* Book Cover or Placeholder */}
         <div className="aspect-[2/3] bg-gray-100 rounded-md mb-3 flex items-center justify-center overflow-hidden">
           {book.thumbnailUrl ? (

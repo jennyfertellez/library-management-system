@@ -2,7 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { bookService } from '../services/bookService';
 import type { ReadingStats } from '../types/stats';
 import StatsCard from '../components/StatsCard';
-import { BookOpen, BookMarked, BookCheck, TrendingUp, Star, Users } from 'lucide-react';
+import LoadingSpinner from '../components/LoadingSpinner';
+import {
+  BookOpen,
+  BookMarked,
+  BookCheck,
+  TrendingUp,
+  Star,
+  Users
+} from 'lucide-react';
 
 const DashboardPage: React.FC = () => {
   const [stats, setStats] = useState<ReadingStats | null>(null);
@@ -28,11 +36,7 @@ const DashboardPage: React.FC = () => {
   }, []);
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
+    return <LoadingSpinner text="Loading your stats..." />;
   }
 
   if (error) {
@@ -53,42 +57,12 @@ const DashboardPage: React.FC = () => {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <StatsCard
-          title="Total Books"
-          value={stats.totalBooks}
-          icon={BookOpen}
-          color="blue"
-        />
-        <StatsCard
-          title="Currently Reading"
-          value={stats.currentlyReading}
-          icon={BookMarked}
-          color="yellow"
-        />
-        <StatsCard
-          title="Books Read"
-          value={stats.booksRead}
-          icon={BookCheck}
-          color="green"
-        />
-        <StatsCard
-          title="To Read"
-          value={stats.booksToRead}
-          icon={TrendingUp}
-          color="purple"
-        />
-        <StatsCard
-          title="Average Rating"
-          value={stats.averageRating.toFixed(1)}
-          icon={Star}
-          color="yellow"
-        />
-        <StatsCard
-          title="Unique Authors"
-          value={stats.uniqueAuthors}
-          icon={Users}
-          color="blue"
-        />
+        <StatsCard title="Total Books" value={stats.totalBooks} icon={BookOpen} color="blue" />
+        <StatsCard title="Currently Reading" value={stats.currentlyReading} icon={BookMarked} color="yellow" />
+        <StatsCard title="Books Read" value={stats.booksRead} icon={BookCheck} color="green" />
+        <StatsCard title="To Read" value={stats.booksToRead} icon={TrendingUp} color="purple" />
+        <StatsCard title="Average Rating" value={stats.averageRating.toFixed(1)} icon={Star} color="yellow" />
+        <StatsCard title="Unique Authors" value={stats.uniqueAuthors} icon={Users} color="blue" />
       </div>
 
       {/* This Year Section */}
@@ -107,7 +81,9 @@ const DashboardPage: React.FC = () => {
           </div>
           <div>
             <p className="text-sm text-gray-600">Books Per Month</p>
-            <p className="text-2xl font-bold text-gray-900">{stats.booksPerMonth.toFixed(1)}</p>
+            <p className="text-2xl font-bold text-gray-900">
+              {stats.booksPerMonth.toFixed(1)}
+            </p>
           </div>
         </div>
       </div>

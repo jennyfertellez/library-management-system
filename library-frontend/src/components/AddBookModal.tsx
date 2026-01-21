@@ -3,6 +3,7 @@ import { X, BookOpen, Barcode } from 'lucide-react';
 import type { CreateBookRequest } from '../types/book';
 import { ReadingStatus } from '../types/book';
 import { bookService } from '../services/bookService';
+import Button from './Button';
 
 interface AddBookModalProps {
   isOpen: boolean;
@@ -137,13 +138,14 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
                   We'll automatically fetch book details from Google Books
                 </p>
               </div>
-              <button
+              <Button
                 type="submit"
-                disabled={loading}
-                className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                variant="primary"
+                loading={loading}
+                className="w-full"
               >
-                {loading ? 'Looking up...' : 'Lookup ISBN'}
-              </button>
+                {mode === 'isbn' ? 'Lookup ISBN' : 'Add Book'}
+              </Button>
             </form>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">

@@ -2,10 +2,6 @@
 A personal library tracking system to manage books and reading progress, 
 built to solve the real problem of not knowing which books I already own when browsing bookstores.
 
-![Dashboard of Library Management System](library-frontend/screenshots/Screenshot 2026-01-21 at 12.29.02 AM.png)
-
-![Add a new book by ISBN](library-frontend/screenshots/Screenshot 2026-01-21 at 12.30.47 AM.png)
-
 ## Live Demo
 - API Documentation: (http://localhost:8080/swagger-ui.html) (when running locally)
 

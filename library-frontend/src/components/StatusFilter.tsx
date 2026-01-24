@@ -22,8 +22,8 @@ const StatusFilter: React.FC<StatusFilterProps> = ({ currentStatus, onStatusChan
           onClick={() => onStatusChange(filter.value as ReadingStatus | 'ALL')}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             currentStatus === filter.value
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              ? 'bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600'
+              : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
           }`}
         >
           {filter.label}

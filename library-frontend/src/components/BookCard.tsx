@@ -9,10 +9,10 @@ interface BookCardProps {
 }
 
 const statusColors = {
-  [ReadingStatus.TO_READ]: 'bg-blue-100 text-blue-800',
-  [ReadingStatus.CURRENTLY_READING]: 'bg-yellow-100 text-yellow-800',
-  [ReadingStatus.FINISHED]: 'bg-green-100 text-green-800',
-  [ReadingStatus.DNF]: 'bg-red-100 text-red-800',
+  [ReadingStatus.TO_READ]: 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300',
+  [ReadingStatus.CURRENTLY_READING]: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300',
+  [ReadingStatus.FINISHED]: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300',
+  [ReadingStatus.DNF]: 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300',
 };
 
 const statusLabels = {
@@ -25,9 +25,9 @@ const statusLabels = {
 const BookCard: React.FC<BookCardProps> = ({ book }) => {
   return (
     <Link to={`/books/${book.id}`}>
-      <div className="bg-white rounded-lg shadow hover:shadow-xl transition-all duration-300 p-4 cursor-pointer transform hover:-translate-y-1">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/50 hover:shadow-xl dark:hover:shadow-gray-900/70 transition-all duration-300 p-4 cursor-pointer transform hover:-translate-y-1 border border-transparent dark:border-gray-700">
         {/* Book Cover or Placeholder */}
-        <div className="aspect-[2/3] bg-gray-100 rounded-md mb-3 flex items-center justify-center overflow-hidden">
+        <div className="aspect-[2/3] bg-gray-100 dark:bg-gray-700 rounded-md mb-3 flex items-center justify-center overflow-hidden">
           {book.thumbnailUrl ? (
             <img
               src={book.thumbnailUrl}
@@ -35,16 +35,16 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
               className="w-full h-full object-cover"
             />
           ) : (
-            <BookOpen className="h-12 w-12 text-gray-400" />
+            <BookOpen className="h-12 w-12 text-gray-400 dark:text-gray-500" />
           )}
         </div>
 
         {/* Book Info */}
-        <h3 className="font-semibold text-gray-900 line-clamp-2 mb-1">
+        <h3 className="font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 mb-1">
           {book.title}
         </h3>
 
-        <p className="text-sm text-gray-600 mb-2">
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
           {book.author || 'Unknown Author'}
         </p>
 
@@ -56,8 +56,8 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
         {/* Rating */}
         {book.rating && (
           <div className="flex items-center mt-2">
-            <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
-            <span className="ml-1 text-sm text-gray-700">{book.rating}/5</span>
+            <Star className="h-4 w-4 text-yellow-500 dark:text-yellow-400 fill-yellow-500 dark:fill-yellow-400" />
+            <span className="ml-1 text-sm text-gray-700 dark:text-gray-300">{book.rating}/5</span>
           </div>
         )}
       </div>

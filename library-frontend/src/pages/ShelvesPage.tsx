@@ -46,15 +46,15 @@ const ShelvesPage: React.FC = () => {
   if (loading) {
     return (
       <div className="flex h-64 items-center justify-center">
-        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600" />
+        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600 dark:border-blue-400" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="rounded-lg border border-red-200 bg-red-50 p-4">
-        <p className="text-red-800">{error}</p>
+      <div className="rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 p-4">
+        <p className="text-red-800 dark:text-red-200">{error}</p>
       </div>
     );
   }
@@ -64,8 +64,8 @@ const ShelvesPage: React.FC = () => {
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">My Shelves</h1>
-          <p className="mt-1 text-gray-600">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">My Shelves</h1>
+          <p className="mt-1 text-gray-600 dark:text-gray-400">
             Organize your books into collections
           </p>
         </div>
@@ -75,7 +75,7 @@ const ShelvesPage: React.FC = () => {
             setEditingShelf(undefined);
             setIsShelfModalOpen(true);
           }}
-          className="flex items-center rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+          className="flex items-center rounded-lg bg-blue-600 dark:bg-blue-500 px-4 py-2 text-white hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
         >
           <Plus className="mr-2 h-5 w-5" />
           Create Shelf
@@ -112,18 +112,18 @@ const ShelvesPage: React.FC = () => {
       {/* Empty State or Shelves Grid */}
       {shelves.length === 0 ? (
         <div className="py-12 text-center">
-          <Library className="mx-auto mb-4 h-16 w-16 text-gray-400" />
-          <h3 className="mb-2 text-lg font-medium text-gray-900">
+          <Library className="mx-auto mb-4 h-16 w-16 text-gray-400 dark:text-gray-500" />
+          <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-gray-100">
             No shelves yet
           </h3>
-          <p className="mb-4 text-gray-600">
+          <p className="mb-4 text-gray-600 dark:text-gray-400">
             Create your first shelf to organize your books!
           </p>
           <button
             onClick={() => {
               setIsShelfModalOpen(true);
             }}
-            className="rounded-lg bg-blue-600 px-6 py-2 text-white hover:bg-blue-700"
+            className="rounded-lg bg-blue-600 dark:bg-blue-500 px-6 py-2 text-white hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
           >
             Create Your First Shelf
           </button>

@@ -41,7 +41,7 @@ public class ReadingGoal {
     private LocalDateTime updatedAt;
 
     @PrePersist
-    protected  void onCreate() {
+    protected void onCreate() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
     }

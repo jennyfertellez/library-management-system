@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,5 +45,7 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
 
     //Find books by author with pagination
     Page<Book> findByAuthorContainingIgnoreCase(String author, Pageable pageable);
+
+    List<Book> findByStatusAndFinishedDateBetween(ReadingStatus status, LocalDate startDate, LocalDate endDate);
 
 }

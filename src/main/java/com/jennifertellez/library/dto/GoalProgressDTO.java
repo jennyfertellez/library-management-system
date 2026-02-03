@@ -1,6 +1,5 @@
 package com.jennifertellez.library.dto;
 
-import com.jennifertellez.library.model.Book;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,5 +23,5 @@ public class GoalProgressDTO {
     private Double booksPerMonth;
     private Double booksPerWeek;
     private Boolean onTrack;
-    private List<Book> recentlyFinishedBooks;
+    private List<BookResponse> recentlyFinishedBooks;
 }

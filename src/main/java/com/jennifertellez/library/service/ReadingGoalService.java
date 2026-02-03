@@ -1,9 +1,6 @@
 package com.jennifertellez.library.service;
 
-import com.jennifertellez.library.dto.CreateReadingGoalRequest;
-import com.jennifertellez.library.dto.GoalProgressDTO;
-import com.jennifertellez.library.dto.ReadingGoalDTO;
-import com.jennifertellez.library.dto.UpdateReadingGoalRequest;
+import com.jennifertellez.library.dto.*;
 import com.jennifertellez.library.exception.ResourceNotFoundException;
 import com.jennifertellez.library.model.Book;
 import com.jennifertellez.library.model.ReadingGoal;
@@ -36,7 +33,7 @@ public class ReadingGoalService {
         goal.setDescription(createReadingGoalRequest.getDescription());
 
         ReadingGoal saved = readingGoalRepository.save(goal);
-        return covertToDTO(saved);
+        return convertToDTO(saved);
     }
 
     public List<ReadingGoalDTO> getAllGoals() {
@@ -118,22 +115,19 @@ public class ReadingGoalService {
                 ? 0
                 : ChronoUnit.DAYS.between(today, goal.getEndDate()) + 1;
 
-        // Calculate reading pace
         double totalMonths = totalDays / 30.0;
         double totalWeeks = totalDays / 7.0;
         double booksPerMonth = totalMonths > 0 ? goal.getTargetBooks() / totalMonths : 0;
         double booksPerWeek = totalWeeks > 0 ? goal.getTargetBooks() / totalWeeks : 0;
 
-        // Calculate if on track
         long daysPassed = ChronoUnit.DAYS.between(goal.getStartDate(), today);
         double expectedProgress = totalDays > 0 ? ((double) daysPassed / totalDays) * 100 : 0;
         boolean onTrack = percentageComplete >= expectedProgress || goal.getEndDate().isBefore(today);
 
-        // Get recently finished books (last 5)
-        List<BookDTO> recentBooks = finishedBooks.stream()
+        List<BookResponse> recentBooks = finishedBooks.stream()
                 .sorted((b1, b2) -> b2.getFinishedDate().compareTo(b1.getFinishedDate()))
                 .limit(5)
-                .map(this::convertBookToDTO)
+                .map(this::convertBookToResponse)
                 .collect(Collectors.toList());
 
         GoalProgressDTO progress = new GoalProgressDTO();
@@ -167,22 +161,22 @@ public class ReadingGoalService {
         return dto;
     }
 
-    private BookDTO convertBookToDTO(Book book) {
-        BookDTO dto = new BookDTO();
-        dto.setId(book.getId());
-        dto.setTitle(book.getTitle());
-        dto.setAuthor(book.getAuthor());
-        dto.setIsbn(book.getIsbn());
-        dto.setDescription(book.getDescription());
-        dto.setThumbnailUrl(book.getThumbnailUrl());
-        dto.setPublishedDate(book.getPublishedDate());
-        dto.setPageCount(book.getPageCount());
-        dto.setStatus(book.getStatus());
-        dto.setRating(book.getRating());
-        dto.setNotes(book.getNotes());
-        dto.setFinishedDate(book.getFinishedDate());
-        dto.setCreatedAt(book.getCreatedAt());
-        dto.setUpdatedAt(book.getUpdatedAt());
-        return dto;
+    private BookResponse convertBookToResponse(Book book) {
+        BookResponse response = new BookResponse();
+        response.setId(book.getId());
+        response.setIsbn(book.getIsbn());
+        response.setTitle(book.getTitle());
+        response.setAuthor(book.getAuthor());
+        response.setDescription(book.getDescription());
+        response.setPublishedDate(book.getPublishedDate());
+        response.setPageCount(book.getPageCount());
+        response.setThumbnailUrl(book.getThumbnail());
+        response.setStatus(book.getStatus());
+        response.setFinishedDate(book.getFinishedDate());
+        response.setRating(book.getRating());
+        response.setNotes(book.getNotes());
+        response.setCreatedAt(book.getCreatedAt());
+        response.setUpdatedAt(book.getUpdatedAt());
+        return response;
     }
 }

@@ -11,7 +11,7 @@ import java.util.List;
 public class JikanMangaResponse {
 
     @JsonProperty("data")
-    private List<JikanMangaResponse> data;
+    private List<JikanMangaData> data;
 
     @Data
     @JsonIgnoreProperties(ignoreUnknown = true)

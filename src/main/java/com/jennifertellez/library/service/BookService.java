@@ -35,4 +35,8 @@ public interface BookService {
 
     ReadingStatsResponse getReadingStatistics();
 
+    BookResponse createBookFromIsbn(String isbn);
+
+    BookResponse searchBookByTitle(String title);
+
 }

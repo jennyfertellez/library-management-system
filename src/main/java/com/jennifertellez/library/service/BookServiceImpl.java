@@ -61,47 +61,6 @@ public class BookServiceImpl implements BookService {
         return mapToResponse(savedBook);
     }
 
-//    @Override
-//    public BookResponse createBookFromIsbn(String isbn) {
-//
-//        // 1️⃣ Already exists? Return it.
-//        return bookRepository.findByIsbn(isbn)
-//                .map(bookMapper::toResponse)
-//                .orElseGet(() -> {
-//
-//                    // 2️⃣ Fetch from Google Books
-//                    GoogleBooksResponse.BookItem bookItem =
-//                            googleBooksService.searchByIsbn(isbn)
-//                                    .orElseThrow(() ->
-//                                            new RuntimeException("Book not found for ISBN: " + isbn)
-//                                    );
-//
-//                    GoogleBooksResponse.VolumeInfo info =
-//                            bookItem.getVolumeInfo();
-//
-//                    CreateBookRequest request = new CreateBookRequest();
-//                    request.setIsbn(isbn);
-//                    request.setTitle(info.getTitle());
-//                    request.setAuthor(
-//                            info.getAuthors() != null
-//                                    ? String.join(", ", info.getAuthors())
-//                                    : null
-//                    );
-//                    request.setDescription(info.getDescription());
-//                    request.setPublishedDate(info.getPublishedDate());
-//                    request.setPageCount(info.getPageCount());
-//                    request.setThumbnailUrl(
-//                            info.getImageLinks() != null
-//                                    ? info.getImageLinks().getThumbnail()
-//                                    : null
-//                    );
-//                    request.setStatus(ReadingStatus.TO_READ);
-//
-//                    return createBook(request);
-//                });
-//    }
-
-
     @Override
     @Transactional(readOnly = true)
     public BookResponse getBookById(Long id) {
@@ -425,45 +384,61 @@ public class BookServiceImpl implements BookService {
     }
 
     /**
-     * Enhanced ISBN lookup with manga description
+     * Enhanced ISBN lookup with smart fallback and better error handling
      */
     @Override
     public BookResponse createBookFromIsbn(String isbn) {
         log.info("Looking up book/manga with ISBN: {}", isbn);
 
-        // First try Google Books
-        Optional<GoogleBooksResponse.BookItem> googleBook = googleBooksService.searchByIsbn(isbn);
+        String cleanIsbn = isbn.replaceAll("[\\s\\-]", "");
+
+        if (!cleanIsbn.matches("^\\d{10}(\\d{3})?$")) {
+            throw new RuntimeException("Invalid ISBN format. ISBN must be 10 or 13 digits.");
+        }
+
+        // Step 1: try Google Books
+        Optional<GoogleBooksResponse.BookItem> googleBook = googleBooksService.searchByIsbn(cleanIsbn);
 
         if (googleBook.isPresent()) {
             GoogleBooksResponse.VolumeInfo volumeInfo = googleBook.get().getVolumeInfo();
 
             // Check if it's manga
             if (isManga(volumeInfo)) {
-                log.info("Detected manga from Google Books, attempting Jikan lookup");
+                log.info("Detected manga from Google Books: {}", volumeInfo.getTitle());
 
-                // Try to find better data from Jikan
+                // Try to find better data from Jikan using the title
                 Optional<JikanMangaResponse.JikanMangaData> jikanManga =
                         jikanService.searchMangaByTitle(volumeInfo.getTitle());
 
                 if (jikanManga.isPresent()) {
-                    log.info("Found manga in Jikan API, using that data");
+                    log.info("Found better details on manga on Jikan API");
                     BookResponse mangaResponse = convertJikanToBookResponse(jikanManga.get());
+                    //Keep the original ISBN
+                    mangaResponse.setIsbn(cleanIsbn);
                     Book book = convertResponseToEntity(mangaResponse);
                     Book saved = bookRepository.save(book);
                     return mapToResponse(saved);
+                } else {
+                    log.info("Jikan lookup failed, using Google Books data for manga");
                 }
             }
 
-            // Use Google Books data (not manga or Jikan not found)
+            //Use Google Books data
             Book book = convertGoogleBookToEntity(volumeInfo);
-            book.setIsbn(isbn); // Set the ISBN since GoogleBooksResponse doesn't include it
+            book.setIsbn(cleanIsbn);
             Book saved = bookRepository.save(book);
             return mapToResponse(saved);
         }
 
-        // Google Books failed - throw a more helpful error
-        log.warn("Google Books returned no results for ISBN: {}. Try searching by title instead.", isbn);
-        throw new RuntimeException("Book not found with ISBN: " + isbn + ". Try searching by title instead using /api/books/search/title?title=YourBookTitle");
+        // Step 2: Google Books failed - Try to help the user
+        log.warn("ISBN {} not found in Google Books", cleanIsbn);
+
+        // If it might be manga, suggest title search
+        throw new RuntimeException(
+                "Book not found with ISBN: " + cleanIsbn +
+                        ". If this is a manga, try searching by title instead. " +
+                        "Example: Search for 'Naruto Volume 1' in the title search."
+        );
     }
 
     /**

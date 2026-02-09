@@ -32,6 +32,7 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final GoogleBooksService googleBooksService;
     private final JikanService jikanService;
+    private final OpenLibraryService openLibraryService;
 
     @Override
     public BookResponse createBook(CreateBookRequest request) {
@@ -384,61 +385,127 @@ public class BookServiceImpl implements BookService {
     }
 
     /**
-     * Enhanced ISBN lookup with smart fallback and better error handling
+     * Enhanced ISBN lookup with OpenLibrary and Google Books fallback
      */
     @Override
     public BookResponse createBookFromIsbn(String isbn) {
         log.info("Looking up book/manga with ISBN: {}", isbn);
 
+        // Clean the ISBN
         String cleanIsbn = isbn.replaceAll("[\\s\\-]", "");
 
+        // Validate ISBN format
         if (!cleanIsbn.matches("^\\d{10}(\\d{3})?$")) {
             throw new RuntimeException("Invalid ISBN format. ISBN must be 10 or 13 digits.");
         }
 
-        // Step 1: try Google Books
-        Optional<GoogleBooksResponse.BookItem> googleBook = googleBooksService.searchByIsbn(cleanIsbn);
+        // Step 1: Try OpenLibrary first (no rate limits!)
+        Optional<Map<String, Object>> openLibraryBook = openLibraryService.searchByIsbn(cleanIsbn);
 
-        if (googleBook.isPresent()) {
-            GoogleBooksResponse.VolumeInfo volumeInfo = googleBook.get().getVolumeInfo();
-
-            // Check if it's manga
-            if (isManga(volumeInfo)) {
-                log.info("Detected manga from Google Books: {}", volumeInfo.getTitle());
-
-                // Try to find better data from Jikan using the title
-                Optional<JikanMangaResponse.JikanMangaData> jikanManga =
-                        jikanService.searchMangaByTitle(volumeInfo.getTitle());
-
-                if (jikanManga.isPresent()) {
-                    log.info("Found better details on manga on Jikan API");
-                    BookResponse mangaResponse = convertJikanToBookResponse(jikanManga.get());
-                    //Keep the original ISBN
-                    mangaResponse.setIsbn(cleanIsbn);
-                    Book book = convertResponseToEntity(mangaResponse);
-                    Book saved = bookRepository.save(book);
-                    return mapToResponse(saved);
-                } else {
-                    log.info("Jikan lookup failed, using Google Books data for manga");
-                }
-            }
-
-            //Use Google Books data
-            Book book = convertGoogleBookToEntity(volumeInfo);
-            book.setIsbn(cleanIsbn);
+        if (openLibraryBook.isPresent()) {
+            log.info("Found book in OpenLibrary");
+            Book book = convertOpenLibraryToEntity(openLibraryBook.get(), cleanIsbn);
             Book saved = bookRepository.save(book);
             return mapToResponse(saved);
         }
 
-        // Step 2: Google Books failed - Try to help the user
-        log.warn("ISBN {} not found in Google Books", cleanIsbn);
+        // Step 2: Try Google Books (might be rate limited)
+        try {
+            Optional<GoogleBooksResponse.BookItem> googleBook = googleBooksService.searchByIsbn(cleanIsbn);
 
-        // If it might be manga, suggest title search
+            if (googleBook.isPresent()) {
+                GoogleBooksResponse.VolumeInfo volumeInfo = googleBook.get().getVolumeInfo();
+
+                // Check if it's manga
+                if (isManga(volumeInfo)) {
+                    log.info("Detected manga from Google Books: {}", volumeInfo.getTitle());
+
+                    Optional<JikanMangaResponse.JikanMangaData> jikanManga =
+                            jikanService.searchMangaByTitle(volumeInfo.getTitle());
+
+                    if (jikanManga.isPresent()) {
+                        log.info("Found better manga data in Jikan API");
+                        BookResponse mangaResponse = convertJikanToBookResponse(jikanManga.get());
+                        mangaResponse.setIsbn(cleanIsbn);
+                        Book book = convertResponseToEntity(mangaResponse);
+                        Book saved = bookRepository.save(book);
+                        return mapToResponse(saved);
+                    }
+                }
+
+                Book book = convertGoogleBookToEntity(volumeInfo);
+                book.setIsbn(cleanIsbn);
+                Book saved = bookRepository.save(book);
+                return mapToResponse(saved);
+            }
+        } catch (Exception e) {
+            log.warn("Google Books API failed (possibly rate limited): {}", e.getMessage());
+        }
+
+        // Step 3: All APIs failed
         throw new RuntimeException(
                 "Book not found with ISBN: " + cleanIsbn +
-                        ". If this is a manga, try searching by title instead. " +
-                        "Example: Search for 'Naruto Volume 1' in the title search."
+                        ". Please try adding it manually or search by title if it's a manga."
         );
+    }
+
+    /**
+     * Convert OpenLibrary data to Book entity
+     */
+    private Book convertOpenLibraryToEntity(Map<String, Object> data, String isbn) {
+        Book book = new Book();
+
+        // Title
+        if (data.containsKey("title")) {
+            book.setTitle((String) data.get("title"));
+        }
+
+        // Authors
+        if (data.containsKey("authors")) {
+            @SuppressWarnings("unchecked")
+            List<Map<String, Object>> authors = (List<Map<String, Object>>) data.get("authors");
+            if (authors != null && !authors.isEmpty()) {
+                String authorNames = authors.stream()
+                        .map(author -> (String) author.get("name"))
+                        .collect(Collectors.joining(", "));
+                book.setAuthor(authorNames);
+            }
+        }
+
+        // Description
+        if (data.containsKey("notes")) {
+            book.setDescription((String) data.get("notes"));
+        } else if (data.containsKey("excerpts")) {
+            @SuppressWarnings("unchecked")
+            List<Map<String, Object>> excerpts = (List<Map<String, Object>>) data.get("excerpts");
+            if (excerpts != null && !excerpts.isEmpty()) {
+                book.setDescription((String) excerpts.get(0).get("text"));
+            }
+        }
+
+        // Published date
+        if (data.containsKey("publish_date")) {
+            book.setPublishedDate((String) data.get("publish_date"));
+        }
+
+        // Page count
+        if (data.containsKey("number_of_pages")) {
+            book.setPageCount((Integer) data.get("number_of_pages"));
+        }
+
+        // Cover image
+        if (data.containsKey("cover")) {
+            @SuppressWarnings("unchecked")
+            Map<String, String> cover = (Map<String, String>) data.get("cover");
+            if (cover != null && cover.containsKey("medium")) {
+                book.setThumbnail(cover.get("medium"));
+            }
+        }
+
+        book.setIsbn(isbn);
+        book.setStatus(ReadingStatus.TO_READ);
+
+        return book;
     }
 
     /**

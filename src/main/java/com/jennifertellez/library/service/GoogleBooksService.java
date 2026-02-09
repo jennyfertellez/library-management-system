@@ -31,17 +31,26 @@ public class GoogleBooksService {
 
         try {
             String url = GOOGLE_BOOKS_API + isbn;
+            log.info("Full URL: {}", url);
+
             GoogleBooksResponse response = restTemplate.getForObject(url, GoogleBooksResponse.class);
 
+            log.info("Response received: {}", response != null ? "yes" : "null");
+            if (response != null) {
+                log.info("Items in response: {}", response.getItems() != null ? response.getItems().size() : "null");
+            }
+
             if (response != null && response.getItems() != null && !response.getItems().isEmpty()) {
+                log.info("Book found: {}", response.getItems().get(0).getVolumeInfo().getTitle());
                 return Optional.of(response.getItems().get(0));
             }
 
-            log.info("No book found in Google Books for ISBN: {}", isbn);
+            log.warn("No book found in Google Books for ISBN: {}", isbn);
             return Optional.empty();
 
         } catch (RestClientException e) {
             log.error("Error calling Google Books API for ISBN {}: {}", isbn, e.getMessage());
+            log.error("Stack trace: ", e);
             return Optional.empty();
         }
     }

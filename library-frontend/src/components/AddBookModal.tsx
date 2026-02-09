@@ -92,7 +92,14 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
       onClose();
       setIsbn('');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to lookup ISBN');
+      const errorMessage = err.response?.data?.message || 'Failed to lookup ISBN';
+      setError(errorMessage);
+
+      // If error mentions searching by title, suggest switching modes
+      if (errorMessage.includes('try searching by title')) {
+          // Optionally auto-switch to title mode or show a helpful message
+          console.log('Suggestion: Try title search instead');
+          }
     } finally {
       setLoading(false);
     }

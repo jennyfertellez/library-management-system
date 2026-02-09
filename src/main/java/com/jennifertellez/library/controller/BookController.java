@@ -237,4 +237,11 @@ public class BookController {
         BookResponse response = bookService.searchBookByTitle(title);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @GetMapping("/search/all")
+    public ResponseEntity<MultiSourceSearchResponse> searchAllSources(@RequestParam String query) {
+        log.info("GET /api/books/search/all - Searching all sources for: {}", query);
+        MultiSourceSearchResponse results = bookService.searchAllSources(query);
+        return ResponseEntity.ok(results);
+    }
 }

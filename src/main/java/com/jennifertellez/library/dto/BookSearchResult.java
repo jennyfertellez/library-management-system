@@ -18,17 +18,7 @@ public class BookSearchResult {
     private String description;
     private String thumbnailUrl;
     private String publishedDate;
-    private String pageCount;
+    private Integer pageCount;
     private String isbn;
     private String sourceId;
-}
-
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-class MultiSourceSearchResponse {
-    private String query;
-    private List<BookSearchResult> results;
-    private String totalResults;
 }

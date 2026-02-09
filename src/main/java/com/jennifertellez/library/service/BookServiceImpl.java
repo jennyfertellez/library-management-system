@@ -611,4 +611,136 @@ public class BookServiceImpl implements BookService {
         return book;
     }
 
+    @Override
+    public MultiSourceSearchResponse searchAllSources(String query) {
+        log.info("Searching all sources for query: {}", query);
+
+        List<BookSearchResult> allResults = new ArrayList<>();
+
+        // Determine if query is ISBN or title
+        boolean isIsbn = query.replaceAll("[\\s\\-]", "").matches("^\\d{10}(\\d{3})?$");
+
+        if (isIsbn) {
+            String cleanIsbn = query.replaceAll("[\\s\\-]", "");
+
+            //Search OpenLibrary
+            openLibraryService.searchByIsbn(cleanIsbn).ifPresent(data -> {
+                allResults.add(convertOpenLibraryToSearchResult(data, cleanIsbn));
+            });
+
+            //Search Google Books
+            try {
+                googleBooksService.searchByIsbn(cleanIsbn).ifPresent(item -> {
+                    allResults.add(convertGoogleBookToSearchResult(item.getVolumeInfo(), cleanIsbn));
+                });
+            } catch (Exception e) {
+                log.warn("Google Books search failed: {}", e.getMessage());
+            }
+        } else {
+            //Search by title
+
+            //Search Google Books
+            try {
+                googleBooksService.searchByTitle(query).ifPresent(item -> {
+                    allResults.add(convertGoogleBookToSearchResult(item.getVolumeInfo(), null));
+                });
+            } catch (Exception e) {
+                log.warn("Google Books search failed: {}", e.getMessage());
+            }
+
+            //Search Jikan for manga
+            jikanService.searchMangaByTitle(query).ifPresent(manga -> {
+                allResults.add(convertJikanToSearchResult(manga));
+            });
+        }
+
+        return MultiSourceSearchResponse.builder()
+                .query(query)
+                .results(allResults)
+                .totalResults(allResults.size())
+                .build();
+    }
+
+    // Helper converters
+    private BookSearchResult convertOpenLibraryToSearchResult(Map<String, Object> data, String isbn) {
+        String title = data.containsKey("title") ? (String) data.get("title") : "Unknown";
+        String author = "Unknown";
+
+        if (data.containsKey("authors")) {
+            @SuppressWarnings("unchecked")
+                    List<Map<String, Object>> authors = (List<Map<String, Object>>) data.get("authors");
+            if (authors != null && !authors.isEmpty()) {
+                author = authors.stream()
+                        .map(a -> (String) a.get("name"))
+                        .collect(Collectors.joining(", "));
+            }
+        }
+
+        String thumbnail = null;
+        if (data.containsKey("cover")) {
+            @SuppressWarnings("unchecked")
+                    Map<String, String> cover = (Map<String, String>) data.get("cover");
+            if (cover != null) {
+                thumbnail = cover.get("medium");
+            }
+        }
+
+        return BookSearchResult.builder()
+                .source("openLibrary")
+                .title(title)
+                .author(author)
+                .description(data.containsKey("notes") ? (String) data.get("notes") : null)
+                .thumbnailUrl(thumbnail)
+                .publishedDate(data.containsKey("publish_date") ? (String) data.get("publish_date") : null)
+                .pageCount(data.containsKey("number_of_pages") ? (Integer) data.get("number_of_pages") : null)
+                .isbn(isbn)
+                .build();
+    }
+
+    private BookSearchResult convertGoogleBookToSearchResult(GoogleBooksResponse.VolumeInfo volumeInfo, String isbn) {
+        return BookSearchResult.builder()
+                .source("google")
+                .title(volumeInfo.getTitle())
+                .author(volumeInfo.getAuthors() != null ? String.join(", ", volumeInfo.getAuthors()) : null)
+                .description(volumeInfo.getDescription())
+                .thumbnailUrl(volumeInfo.getImageLinks() != null ? volumeInfo.getImageLinks().getThumbnail() : null)
+                .publishedDate(volumeInfo.getPublishedDate())
+                .pageCount(volumeInfo.getPageCount())
+                .isbn(isbn)
+                .build();
+    }
+
+    private BookSearchResult convertJikanToSearchResult(JikanMangaResponse.JikanMangaData manga) {
+        String author = null;
+        if (manga.getAuthors() != null && !manga.getAuthors().isEmpty()) {
+            author = manga.getAuthors().get(0).getName();
+        }
+
+        String thumbnail = null;
+        if (manga.getImages() != null && manga.getImages().getJpg() != null) {
+            thumbnail = manga.getImages().getJpg().getLargeImageUrl() != null
+                    ? manga.getImages().getJpg().getLargeImageUrl()
+                    : manga.getImages().getJpg().getImageUrl();
+        }
+
+        String publishedDate = null;
+        if (manga.getPublished() != null && manga.getPublished().getFrom() != null) {
+            publishedDate = manga.getPublished().getFrom();
+            if (publishedDate.length() >= 10) {
+                publishedDate = publishedDate.substring(0, 10);
+            }
+        }
+
+        return BookSearchResult.builder()
+                .source("jikan")
+                .title(manga.getTitleEnglish() != null ? manga.getTitleEnglish() : manga.getTitle())
+                .author(author)
+                .description(manga.getSynopsis())
+                .thumbnailUrl(thumbnail)
+                .publishedDate(publishedDate)
+                .pageCount(manga.getChapters() != null ? manga.getChapters() * 20 : null)
+                .isbn("MAL-" + manga.getMalId())
+                .sourceId(manga.getMalId().toString())
+                .build();
+    }
 }

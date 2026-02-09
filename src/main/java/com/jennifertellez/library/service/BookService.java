@@ -39,4 +39,6 @@ public interface BookService {
 
     BookResponse searchBookByTitle(String title);
 
+    MultiSourceSearchResponse searchAllSources(String query);
+
 }

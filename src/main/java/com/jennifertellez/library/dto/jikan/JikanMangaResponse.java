@@ -45,7 +45,7 @@ public class JikanMangaResponse {
         private String status;
 
         @JsonProperty("published")
-        private String published;
+        private Published published;
 
         @JsonProperty("score")
         private Double score;

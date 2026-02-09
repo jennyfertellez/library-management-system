@@ -48,11 +48,21 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    //Create a new book entity using Google API
     @PostMapping("/isbn/{isbn}")
     public ResponseEntity<BookResponse> createBookByIsbn(@PathVariable String isbn) {
-        log.info("POST /api/books/isbn/{} - Creating book from ISBN", isbn);
-        BookResponse response = googleBooksService.fetchAndCreateBooksByIsbn(isbn);
+        log.info("POST /api/books/isbn/{} - Creating book from ISBN or title", isbn);
+
+        // Check if it looks like an ISBN (only digits and hyphens)
+        boolean isActualIsbn = isbn.matches("[0-9\\-]+");
+
+        BookResponse response;
+        if (isActualIsbn) {
+            response = bookService.createBookFromIsbn(isbn);
+        } else {
+            // It's a title, search by title instead
+            response = bookService.searchBookByTitle(isbn);
+        }
+
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -219,5 +229,12 @@ public class BookController {
         log.info("GET /api/books/stats - Fetching reading statistics");
         ReadingStatsResponse stats = bookService.getReadingStatistics();
         return ResponseEntity.ok(stats);
+    }
+
+    @GetMapping("/search/title")
+    public ResponseEntity<BookResponse> searchByTitle(@RequestParam String title) {
+        log.info("POST /api/books/search/title - Searching for: {}", title);
+        BookResponse response = bookService.searchBookByTitle(title);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

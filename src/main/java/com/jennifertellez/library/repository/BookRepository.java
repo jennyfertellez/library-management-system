@@ -48,4 +48,6 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
 
     List<Book> findByStatusAndFinishedDateBetween(ReadingStatus status, LocalDate startDate, LocalDate endDate);
 
+    Optional<Book> findByMalId(Long malId);
+
 }

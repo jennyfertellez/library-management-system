@@ -53,6 +53,12 @@ export const bookService = {
     return response.data;
   },
 
+  // Search results from all sources
+  searchAllSources: async (query: string): Promise<MultiSourceSearchResponse> => {
+    const response = await api.get(`/books/search/all?query=${encodeURIComponent(query)}`);
+    return response.data;
+  },
+
   // Get books by status
   getBooksByStatus: async (status: string, page = 0, size = 20) => {
     const response = await api.get<PageResponse<Book>>('/books', {

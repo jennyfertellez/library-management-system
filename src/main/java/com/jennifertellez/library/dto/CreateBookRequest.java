@@ -20,7 +20,10 @@ public class CreateBookRequest {
     @Size(max = 255, message = "Author name must be less than 255 characters")
     private String author;
 
-    @Pattern(regexp = "^(|\\d{10}|\\d{13})$", message = "ISBN must be 10 or 13 digits")
+    @Pattern(
+            regexp = "^(\\d{10}|\\d{13}|MAL-\\d+)?$",
+            message = "ISBN must be 10 or 13 digits, or MAL ID for manga"
+    )
     private String isbn;
 
     @Size(max = 2000, message = "Description must be less than 2000 characters")

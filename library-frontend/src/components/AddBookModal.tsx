@@ -4,6 +4,8 @@ import type { CreateBookRequest } from '../types/book';
 import { ReadingStatus } from '../types/book';
 import { bookService } from '../services/bookService';
 import Button from './Button';
+import SearchResultCard from './SearchResultCard';
+import type { BookSearchResult } from '../types/searchResults';
 
 interface AddBookModalProps {
   isOpen: boolean;
@@ -16,8 +18,11 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
   const [isbn, setIsbn] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  // NEW: Search results state
+  const [searchResults, setSearchResults] = useState<BookSearchResult[]>([]);
+  const [showResults, setShowResults] = useState(false);
 
   const [formData, setFormData] = useState<CreateBookRequest>({
     title: '',
@@ -28,20 +33,20 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
   });
 
   useEffect(() => {
-      const handleEscape = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') {
-          onClose();
-        }
-      };
-
-      if (isOpen) {
-        document.addEventListener('keydown', handleEscape);
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
       }
+    };
 
-      return () => {
-        document.removeEventListener('keydown', handleEscape);
-      };
-    }, [isOpen, onClose]);
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [isOpen, onClose]);
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
@@ -62,7 +67,7 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
     e.preventDefault();
 
     if (!validateForm()) {
-        return;
+      return;
     }
 
     setLoading(true);
@@ -80,26 +85,54 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
     }
   };
 
-
-  const handleIsbnLookup = async (e: React.FormEvent) => {
+  // NEW: Handle multi-source search
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    setShowResults(false);
 
     try {
-      await bookService.createBookFromIsbn(isbn);
+      const response = await bookService.searchAllSources(isbn);
+
+      if (response.results.length === 0) {
+        setError('No books found. Try a different search term or add manually.');
+      } else if (response.results.length === 1) {
+        // Only one result, add it directly
+        await handleSelectResult(response.results[0]);
+      } else {
+        // Multiple results, show them
+        setSearchResults(response.results);
+        setShowResults(true);
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to search');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // NEW: Handle selecting a search result
+  const handleSelectResult = async (result: BookSearchResult) => {
+    setLoading(true);
+    try {
+      const createRequest: CreateBookRequest = {
+        title: result.title,
+        author: result.author || '',
+        isbn: result.isbn || '',
+        description: result.description || '',
+        publishedDate: result.publishedDate,
+        pageCount: result.pageCount,
+        thumbnailUrl: result.thumbnailUrl,
+        status: ReadingStatus.TO_READ
+      };
+
+      await bookService.createBook(createRequest);
       onBookAdded();
       onClose();
-      setIsbn('');
+      resetForm();
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || 'Failed to lookup ISBN';
-      setError(errorMessage);
-
-      // If error mentions searching by title, suggest switching modes
-      if (errorMessage.includes('try searching by title')) {
-          // Optionally auto-switch to title mode or show a helpful message
-          console.log('Suggestion: Try title search instead');
-          }
+      setError(err.response?.data?.message || 'Failed to add book');
     } finally {
       setLoading(false);
     }
@@ -114,10 +147,11 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
       status: ReadingStatus.TO_READ,
     });
     setIsbn('');
+    setSearchResults([]);
+    setShowResults(false);
     setError(null);
     setErrors({});
   };
-
 
   if (!isOpen) return null;
 
@@ -136,7 +170,11 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
         <div className="p-6 border-b border-gray-200 dark:border-gray-700">
           <div className="flex gap-2">
             <button
-              onClick={() => setMode('form')}
+              onClick={() => {
+                setMode('form');
+                setShowResults(false);
+                setSearchResults([]);
+              }}
               className={`flex-1 py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors ${
                 mode === 'form'
                   ? 'bg-blue-600 dark:bg-blue-500 text-white'
@@ -168,34 +206,69 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
             </div>
           )}
 
+          {/* ISBN/SEARCH MODE - UPDATED SECTION */}
           {mode === 'isbn' ? (
-            <form onSubmit={handleIsbnLookup} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  ISBN (10 or 13 digits)
-                </label>
-                <input
-                  type="text"
-                  value={isbn}
-                  onChange={(e) => setIsbn(e.target.value)}
-                  placeholder="9780547928227"
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent"
-                  required
-                />
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                  We'll automatically fetch book details from Google Books
-                </p>
-              </div>
-              <Button
-                type="submit"
-                variant="primary"
-                loading={loading}
-                className="w-full"
-              >
-                {mode === 'isbn' ? 'Lookup ISBN' : 'Add Book'}
-              </Button>
-            </form>
+            <div>
+              {!showResults ? (
+                // SEARCH FORM
+                <form onSubmit={handleSearch} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      ISBN or Title
+                    </label>
+                    <input
+                      type="text"
+                      value={isbn}
+                      onChange={(e) => setIsbn(e.target.value)}
+                      placeholder="9780547928227 or Naruto"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent"
+                      required
+                    />
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      Enter an ISBN for books or title for manga
+                    </p>
+                  </div>
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    loading={loading}
+                    className="w-full"
+                  >
+                    Search
+                  </Button>
+                </form>
+              ) : (
+                // SEARCH RESULTS
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">
+                      Found {searchResults.length} result{searchResults.length !== 1 ? 's' : ''}
+                    </h3>
+                    <button
+                      onClick={() => {
+                        setShowResults(false);
+                        setSearchResults([]);
+                      }}
+                      className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                    >
+                      New Search
+                    </button>
+                  </div>
+
+                  <div className="space-y-3 max-h-96 overflow-y-auto">
+                    {searchResults.map((result, index) => (
+                      <SearchResultCard
+                        key={index}
+                        result={result}
+                        onSelect={handleSelectResult}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           ) : (
+            // MANUAL FORM - NO CHANGES
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">

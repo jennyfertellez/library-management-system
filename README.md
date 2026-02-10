@@ -42,7 +42,9 @@ engineering principles.
 - ✅ **CRUD Operations** - Create, read, update, and delete books
 - ✅ **Reading Status Tracking** - Mark books as: To Read, Currently Reading, Finished, or DNF
 - ✅ **Advanced Search** - Search across title, author, and description
-- ✅ **ISBN Lookup** - Auto-populate book details from Google Books API
+- ✅ **Multi-Source Book Lookup** - Auto-populate book detials from OpenLibrary, Google Books, and Jikan (manga)
+- ✅ **Manga Support** - Dedicated manga search via Jikan API with auto-detection
+- ✅ **Smart Search** - Search by ISBN or title with results from multiple sources
 - ✅ **Duplicate Detection** - Prevent adding the same book twice
 - ✅ **Custom Shelves** - Organize books into personalized collections
 
@@ -73,6 +75,12 @@ engineering principles.
 - **Spring Boot 3.2.1** - Industry-standard framework for production applications
 - **Spring Data JPA** - Simplifies database operations with repository pattern
 - **Hibernate** - Robust ORM for PostgreSQL
+- **RestTemplate** - HTTP client for external API integration
+
+**External APIs**
+- **OpenLibrary API** - Primary book data source (no rate limits)
+- **Google Books API** - Secondary book data source with ISBN lookup
+- **Jikan API** - Manga database (MyAnimeList integration)
 
 **Frontend Framework**
 - **React** - UI Library
@@ -143,17 +151,20 @@ cd library-frontend
 ## 📚 API Documentation
 ### Books
 
-| Method   | Endpoint                     | Description                          |
-|----------|------------------------------|--------------------------------------|
-| `GET`    | `/api/books`                 | Get all books (paginated)            |
-| `GET`    | `/api/books/{id}`            | Get books by ID                      |
-| `POST`   | `/api/books`                 | Create a new book                    |
-| `PUT`    | `/api/books/{id}`            | Uodate a book                        |
-| `DELETE` | `/api/books/{id}`            | Delete a book                        |
-| `GET`    | `/api/books/search`          | Search books by term                 |
-| `POST`   | `/api/books/isbn/{isbn}`     | Create book from ISBN (Google Books) |
-| `GET`    | `/api/books/stats`           | Get reading statistics               |
-| `GET`    | `/api/books/advanced-search` | Advanced search with filters         |
+| Method     | Endpoint                     | Description                                     |
+|------------|------------------------------|-------------------------------------------------|
+| `GET`      | `/api/books`                 | Get all books (paginated)                       |
+| `GET`      | `/api/books/{id}`            | Get books by ID                                 |
+| `POST`     | `/api/books`                 | Create a new book                               |
+| `PUT`      | `/api/books/{id}`            | Uodate a book                                   |
+| `DELETE`   | `/api/books/{id}`            | Delete a book                                   |
+| `GET`      | `/api/books/search`          | Search books by term                            |
+| `POST`     | `/api/books/isbn/{isbn}`     | Create book from ISBN (multi-source)            |
+| `GET`      | `/api/books/search/title`    | Search by title (supports manga)                | 
+| `GET`      | `/api/books/search/all`      | Search all sources (OpenLibrary, Google, Jikan) |
+| `GET`      | `/api/books/stats`           | Get reading statistics                          |
+| `GET`      | `/api/books/advanced-search` | Advanced search with filters                    |
+
 
 ### Shelves
 | Method   | Endpoint                                 | Description            |
@@ -183,10 +194,15 @@ curl -X POST http://localhost:8080/api/books \
 ```
 curl -X POST http://localhost:8080/api/books/isbn/9780547928227
 ```
-**Search Books:**
+**Search All Sources (Multi-Source):**
+```bash
+# Search by ISBN across all sources 
+curl "http://localhost:8080/api/books/search/all?query=9780545010221"
+
+# Search by title (especially for manga)
+curl "http://localhost:8080/api/books/search/title?title=One Piece"
 ```
-curl http://localhost:8080/api/books/search?term=tolkien
-```
+
 **Get Reading Stats**
 ```
 curl http://localhost:8080/api/books/stats
@@ -260,7 +276,33 @@ CREATE TABLE book_shelf (
 - Book ↔ Shelf: Many-to-Many (a book can be in multiple shelves, a shelf contains multiple books)
 
 ## 💡 Challenges & Solutions:
-TBA
+## 💡 Challenges & Solutions
+
+### 1. **Google Books API Rate Limiting**
+**Challenge:** Google Books API has a daily quota limit (free tier: 1,000 requests/day), which was easily exceeded during development and testing.
+
+**Solution:** Implemented a multi-source fallback system:
+- **Primary:** OpenLibrary API (no rate limits)
+- **Secondary:** Google Books API (when OpenLibrary fails)
+- **Tertiary:** Jikan API for manga
+
+This ensures book lookups always succeed, even when one API is unavailable.
+
+### 2. **Manga Coverage Gap**
+**Challenge:** Traditional book APIs (Google Books, OpenLibrary) have limited manga coverage and often miss volumes or series.
+
+**Solution:** Integrated Jikan API (MyAnimeList database) specifically for manga:
+- Auto-detects manga based on title patterns
+- Falls back to Jikan when manga is detected
+- Provides comprehensive manga metadata (volumes, chapters, Japanese titles)
+
+### 3. **Ambiguous Search Results**
+**Challenge:** Different APIs return different results for the same query. Users couldn't confirm they were adding the correct book.
+
+**Solution:** Built a multi-source search preview:
+- Shows results from all APIs side-by-side
+- Users can compare and select the most accurate result
+- Displays source badges (OpenLibrary, Google, Jikan) for transparency
 
 ## 🧪 Testing
 **Test Coverage**
@@ -331,13 +373,22 @@ library-management-system/
 - **RestTemplate** - Spring's HTTP client for third-party integration
 
 ## 🔮 Future Enhancements
-To be added:
-- **User Authentication** - Spring Security with JWT tokens
-- **Reading Goals** - Track books read per year, pages per day
+
+**In Progress (Week 1-2):**
+- ✅ Multi-source book search (OpenLibrary, Google Books, Jikan)
+- ✅ Manga support with Jikan API integration
+- 🚧 Reading Goals - Track books read per year, pages per day
+- 🚧 Barcode Scanner - Manual ISBN entry (camera scan coming next)
+
+**Planned (Week 3-4):**
+- **Camera Barcode Scanner** - Scan ISBN via device camera
+- **Enhanced Book Details** - More metadata and book insights
+- **Import/Export** - CSV/Excel export for book lists
+
+**Future (Post-March 2026):**
+- **User Authentication** - Spring Security with JWT tokens (foundation complete)
 - **Book Recommendations** - ML-based suggestions from reading history
-- **Export/Import** - CSV/Excel export for book lists
 - **Mobile App** - React Native frontend
-- **Barcode Scanner** - Scan ISBN via camera
 - **Social Features** - Share reading lists with friends
 - **Advanced Analytics** - Reading patterns, favorite genres, statistics dashboard
 

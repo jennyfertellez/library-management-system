@@ -20,7 +20,10 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
   const [error, setError] = useState<string | null>(null);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  // NEW: Search results state
+  // Add success message state
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  // Search results state
   const [searchResults, setSearchResults] = useState<BookSearchResult[]>([]);
   const [showResults, setShowResults] = useState(false);
 
@@ -85,41 +88,45 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
     }
   };
 
-  // NEW: Handle multi-source search
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('🔍 Starting search for:', isbn);
     setLoading(true);
     setError(null);
     setShowResults(false);
 
     try {
+      console.log('📡 Calling API...');
       const response = await bookService.searchAllSources(isbn);
+      console.log('✅ API Response:', response);
 
       if (response.results.length === 0) {
+        console.log('❌ No results found');
         setError('No books found. Try a different search term or add manually.');
-      } else if (response.results.length === 1) {
-        // Only one result, add it directly
-        await handleSelectResult(response.results[0]);
       } else {
-        // Multiple results, show them
+        console.log('✅ Found results:', response.results.length);
         setSearchResults(response.results);
         setShowResults(true);
       }
     } catch (err: any) {
+      console.error('❌ Error:', err);
+      console.error('Error response:', err.response);
       setError(err.response?.data?.message || 'Failed to search');
     } finally {
       setLoading(false);
     }
   };
 
-  // NEW: Handle selecting a search result
   const handleSelectResult = async (result: BookSearchResult) => {
     setLoading(true);
+    setError(null);
     try {
+      const isbn = result.isbn?.startsWith('MAL-') ? '' : result.isbn || '';
+
       const createRequest: CreateBookRequest = {
         title: result.title,
         author: result.author || '',
-        isbn: result.isbn || '',
+        isbn: isbn,
         description: result.description || '',
         publishedDate: result.publishedDate,
         pageCount: result.pageCount,
@@ -128,9 +135,15 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
       };
 
       await bookService.createBook(createRequest);
-      onBookAdded();
-      onClose();
-      resetForm();
+
+      setSuccessMessage(`✓ Added "${result.title}" to your library!`);
+
+      setTimeout(() => {
+        onBookAdded();
+        onClose();
+        resetForm();
+      }, 1000);
+
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to add book');
     } finally {
@@ -151,6 +164,7 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
     setShowResults(false);
     setError(null);
     setErrors({});
+    setSuccessMessage(null);
   };
 
   if (!isOpen) return null;
@@ -200,17 +214,24 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
 
         {/* Content */}
         <div className="p-6">
+          {/* SUCCESS MESSAGE */}
+          {successMessage && (
+            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3 mb-4">
+              <p className="text-green-800 dark:text-green-200 text-sm font-medium">{successMessage}</p>
+            </div>
+          )}
+
+          {/* ERROR MESSAGE */}
           {error && (
             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 mb-4">
               <p className="text-red-800 dark:text-red-200 text-sm">{error}</p>
             </div>
           )}
 
-          {/* ISBN/SEARCH MODE - UPDATED SECTION */}
+          {/* ISBN/SEARCH MODE */}
           {mode === 'isbn' ? (
             <div>
-              {!showResults ? (
-                // SEARCH FORM
+              {!showResults && !loading && (
                 <form onSubmit={handleSearch} className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -237,8 +258,59 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
                     Search
                   </Button>
                 </form>
-              ) : (
-                // SEARCH RESULTS
+              )}
+
+              {loading && (
+                <div className="space-y-3">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 animate-pulse">
+                      <div className="flex gap-4">
+                        <div className="w-24 h-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                        <div className="flex-1 space-y-3">
+                          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
+                          <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+                          <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {showResults && !loading && searchResults.length === 0 && (
+                <div className="text-center py-12">
+                  <BookOpen className="h-16 w-16 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+                    No books found
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400 mb-4">
+                    Try a different search term or add the book manually
+                  </p>
+                  <div className="flex gap-3 justify-center">
+                    <button
+                      onClick={() => {
+                        setShowResults(false);
+                        setSearchResults([]);
+                      }}
+                      className="px-4 py-2 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600"
+                    >
+                      Try Again
+                    </button>
+                    <button
+                      onClick={() => {
+                        setMode('form');
+                        setShowResults(false);
+                      }}
+                      className="px-4 py-2 text-sm bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600"
+                    >
+                      Add Manually
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {showResults && !loading && searchResults.length > 0 && (
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="font-semibold text-gray-900 dark:text-gray-100">
@@ -268,7 +340,7 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
               )}
             </div>
           ) : (
-            // MANUAL FORM - NO CHANGES
+            // MANUAL FORM
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">

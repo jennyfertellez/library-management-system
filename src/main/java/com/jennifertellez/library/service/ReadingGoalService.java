@@ -8,6 +8,7 @@ import com.jennifertellez.library.model.ReadingStatus;
 import com.jennifertellez.library.repository.BookRepository;
 import com.jennifertellez.library.repository.ReadingGoalRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReadingGoalService {
@@ -24,52 +26,88 @@ public class ReadingGoalService {
     private final BookRepository bookRepository;
 
     @Transactional
-    public ReadingGoalDTO createGoal(CreateReadingGoalRequest createReadingGoalRequest) {
+    public ReadingGoal createGoal(CreateReadingGoalRequest createReadingGoalRequest) {
+        log.info("Creating new reading goal for year {}", createReadingGoalRequest.getYear());
+
+        // Check for overlapping goals
+        boolean hasOverlap = readingGoalRepository.existsOverlappingGoal(
+                0L,
+                createReadingGoalRequest.getStartDate(),
+                createReadingGoalRequest.getEndDate()
+        );
+
+        if (hasOverlap) {
+            throw new IllegalArgumentException(
+                    "A goal already exists for this date range"
+            );
+        }
+
+        // Deactivate other active goals if this one is being set as active
+        readingGoalRepository.findByIsActiveTrue().ifPresent(existingGoal -> {
+            existingGoal.setIsActive(false);
+            readingGoalRepository.save(existingGoal);
+            log.info("Deactivated previous active goal: {}", existingGoal.getId());
+        });
+
         ReadingGoal goal = new ReadingGoal();
         goal.setTargetBooks(createReadingGoalRequest.getTargetBooks());
         goal.setYear(createReadingGoalRequest.getYear());
         goal.setStartDate(createReadingGoalRequest.getStartDate());
         goal.setEndDate(createReadingGoalRequest.getEndDate());
         goal.setDescription(createReadingGoalRequest.getDescription());
+        goal.setIsActive(true);
 
         ReadingGoal saved = readingGoalRepository.save(goal);
-        return convertToDTO(saved);
+        log.info("Created reading goal with ID: {}", saved.getId());
+
+        return saved;
     }
 
-    public List<ReadingGoalDTO> getAllGoals() {
-        return readingGoalRepository.findAll().stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+    public List<ReadingGoal> getAllGoals() {
+        return readingGoalRepository.findAllByOrderByCreatedAtDesc();
     }
 
-    public ReadingGoalDTO getGoalById(Long id) {
-        ReadingGoal goal = readingGoalRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Reading goal not found with id: " + id));
-        return convertToDTO(goal);
+    public ReadingGoal getGoalById(Long id) {
+        return readingGoalRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Reading goal not found for id: " + id));
     }
 
-    public ReadingGoalDTO getCurrentGoal() {
-        ReadingGoal goal = readingGoalRepository.findActiveGoalByDate(LocalDate.now())
+    public ReadingGoal getActiveGoal() {
+        return readingGoalRepository.findByIsActiveTrue()
                 .orElseThrow(() -> new ResourceNotFoundException("No active reading goal found"));
-        return convertToDTO(goal);
     }
 
-    public List<ReadingGoalDTO> getCurrentAndFutureGoals() {
-        return readingGoalRepository.findCurrentAndFutureGoals(LocalDate.now()).stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+    public ReadingGoal getCurrentGoal() {
+        return readingGoalRepository.findCurrentGoal(LocalDate.now())
+                .orElseThrow(() -> new ResourceNotFoundException("Reading goal not found for current date"));
     }
 
     @Transactional
-    public ReadingGoalDTO updateGoal(Long id, UpdateReadingGoalRequest updateReadingGoalRequest) {
-        ReadingGoal readingGoal = readingGoalRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Reading goal not found with id: " + id));
+    public ReadingGoal updateGoal(Long id, UpdateReadingGoalRequest updateReadingGoalRequest) {
+        log.info("Updating reading goal for id {}", id);
+
+        ReadingGoal readingGoal = getGoalById(id);
+
+        if (updateReadingGoalRequest.getStartDate() != null || updateReadingGoalRequest.getEndDate() != null) {
+            LocalDate newStart = updateReadingGoalRequest.getStartDate() != null ?
+                    updateReadingGoalRequest.getStartDate() : readingGoal.getStartDate();
+            LocalDate newEnd = updateReadingGoalRequest.getEndDate() != null ?
+                    updateReadingGoalRequest.getEndDate() : readingGoal.getEndDate();
+
+            boolean hasOverlap = readingGoalRepository.existsOverlappingGoal(
+                    id, newStart, newEnd
+            );
+
+            if (hasOverlap) {
+                throw new IllegalArgumentException(
+                        "Updated date range overlaps with another goal"
+                );
+            }
+        }
+
 
         if (updateReadingGoalRequest.getTargetBooks() != null) {
             readingGoal.setTargetBooks(updateReadingGoalRequest.getTargetBooks());
-        }
-        if (updateReadingGoalRequest.getYear() != null) {
-            readingGoal.setYear(updateReadingGoalRequest.getYear());
         }
         if (updateReadingGoalRequest.getStartDate() != null) {
             readingGoal.setStartDate(updateReadingGoalRequest.getStartDate());
@@ -80,22 +118,36 @@ public class ReadingGoalService {
         if (updateReadingGoalRequest.getDescription() != null) {
             readingGoal.setDescription(readingGoal.getDescription());
         }
+        if (updateReadingGoalRequest.getIsActive() != null) {
+            if (updateReadingGoalRequest.getIsActive()) {
+                readingGoalRepository.findByIsActiveTrue().ifPresent(existingGoal -> {
+                    if (!existingGoal.getId().equals(id)) {
+                        existingGoal.setIsActive(false);
+                        readingGoalRepository.save(existingGoal);
+                    }
+                });
+            }
+            readingGoal.setIsActive(updateReadingGoalRequest.getIsActive());
+        }
 
         ReadingGoal updated = readingGoalRepository.save(readingGoal);
-        return convertToDTO(updated);
+        log.info("Updated reading goal: {}", id);
+
+        return updated;
     }
 
     @Transactional
     public void deleteGoal(Long id) {
-        if (!readingGoalRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Reading goal not found with id: " + id);
-        }
-        readingGoalRepository.deleteById(id);
+        log.info("Deleting reading goal: {}", id);
+
+        ReadingGoal goal = getGoalById(id);
+        readingGoalRepository.delete(goal);
+
+        log.info("Deleted reading goal: {}", id);
     }
 
-    public GoalProgressDTO getGoalProgress(Long id) {
-        ReadingGoal goal = readingGoalRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Reading goal not found with id: " + id));
+    public GoalProgressDTO getGoalProgress(Long goalId) {
+        ReadingGoal goal = getGoalById(goalId);
 
         List<Book> finishedBooks = bookRepository.findByStatusAndFinishedDateBetween(
                 ReadingStatus.FINISHED,
@@ -106,44 +158,51 @@ public class ReadingGoalService {
         int booksRead = finishedBooks.size();
         int booksRemaining = Math.max(0, goal.getTargetBooks() - booksRead);
         double percentageComplete = goal.getTargetBooks() > 0
-                ? ((double) booksRead / goal.getTargetBooks()) * 100
-                : 0;
+                ? (booksRead * 100.0) / goal.getTargetBooks() : 0.0;
 
-        LocalDate today = LocalDate.now();
-        long totalDays = ChronoUnit.DAYS.between(goal.getStartDate(), goal.getEndDate()) + 1;
-        long daysRemaining = goal.getEndDate().isBefore(today)
-                ? 0
-                : ChronoUnit.DAYS.between(today, goal.getEndDate()) + 1;
+        long daysElapsed = goal.getDaysElapsed();
+        long daysRemaining = goal.getDaysRemaining();
+        long totalDays = ChronoUnit.DAYS.between(
+                goal.getStartDate(),
+                goal.getEndDate()
+        );
 
-        double totalMonths = totalDays / 30.0;
-        double totalWeeks = totalDays / 7.0;
-        double booksPerMonth = totalMonths > 0 ? goal.getTargetBooks() / totalMonths : 0;
-        double booksPerWeek = totalWeeks > 0 ? goal.getTargetBooks() / totalWeeks : 0;
+        // Books per month (target pace)
+        double monthsInGoal = totalDays / 30.0;
+        double booksPerMonth = monthsInGoal > 0 ?
+                goal.getTargetBooks() / monthsInGoal : 0.0;
 
-        long daysPassed = ChronoUnit.DAYS.between(goal.getStartDate(), today);
-        double expectedProgress = totalDays > 0 ? ((double) daysPassed / totalDays) * 100 : 0;
-        boolean onTrack = percentageComplete >= expectedProgress || goal.getEndDate().isBefore(today);
+        // Books per week (target pace)
+        double weeksInGoal = totalDays / 7.0;
+        double booksPerWeek = weeksInGoal > 0 ?
+                goal.getTargetBooks() / weeksInGoal : 0.0;
 
-        List<BookResponse> recentBooks = finishedBooks.stream()
+        // Actual pace thus far
+        double monthsElapsed = daysElapsed / 30.0;
+        double averageBooksPerMonth = monthsElapsed > 0 ?
+                booksRead / monthsElapsed : 0.0;
+
+        // Determine if on track
+        double expectedBooks = daysElapsed > 0 ?
+                (goal.getTargetBooks() * daysElapsed * 1.0) / totalDays : 0.0;
+        boolean onTrack = booksRead >= expectedBooks * 0.9; // 90% threshold
+
+
+
+        List<Book> recentlyFinished = finishedBooks.stream()
                 .sorted((b1, b2) -> b2.getFinishedDate().compareTo(b1.getFinishedDate()))
                 .limit(5)
-                .map(this::convertBookToResponse)
-                .collect(Collectors.toList());
+                .toList();
 
-        GoalProgressDTO progress = new GoalProgressDTO();
-        progress.setGoalId(goal.getId());
-        progress.setTargetBooks(goal.getTargetBooks());
+        GoalProgressDTO progress = GoalProgressDTO.fromGoal(goal);
         progress.setBooksRead(booksRead);
         progress.setBooksRemaining(booksRemaining);
-        progress.setPercentageComplete(Math.round(percentageComplete * 10.0) / 10.0);
-        progress.setStartDate(goal.getStartDate());
-        progress.setEndDate(goal.getEndDate());
-        progress.setDaysRemaining((int) daysRemaining);
-        progress.setTotalDays((int) totalDays);
+        progress.setPercentageCompleted(Math.round(percentageComplete * 10.0) / 10.0);
         progress.setBooksPerMonth(Math.round(booksPerMonth * 10.0) / 10.0);
         progress.setBooksPerWeek(Math.round(booksPerWeek * 10.0) / 10.0);
+        progress.setAverageBooksPerMonth(Math.round(averageBooksPerMonth * 10.0) / 10.0);
         progress.setOnTrack(onTrack);
-        progress.setRecentlyFinishedBooks(recentBooks);
+        progress.setRecentlyFinished(recentlyFinished);
 
         return progress;
     }

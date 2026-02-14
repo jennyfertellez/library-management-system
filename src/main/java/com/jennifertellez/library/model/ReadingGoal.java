@@ -4,9 +4,12 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Table(name = "reading_goals")
@@ -34,20 +37,37 @@ public class ReadingGoal {
     @Column(length = 500)
     private String description;
 
+    @Column(nullable = false)
+    private Boolean isActive = true;
+
+    @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(nullable = false)
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
+    public boolean isCurrent() {
+        LocalDate now = LocalDate.now();
+        return now.isAfter(startDate.minusDays(1)) && now.isBefore(endDate.plusDays(1));
     }
 
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
+    public long getDaysRemaining() {
+        LocalDate now = LocalDate.now();
+        if (now.isAfter(endDate)) {
+            return 0;
+        }
+        return ChronoUnit.DAYS.between(now, endDate);
+    }
+
+    public long getDaysElapsed() {
+        LocalDate now = LocalDate.now();
+        if (now.isBefore(startDate)) {
+            return 0;
+        }
+        if (now.isAfter(endDate)) {
+            return  ChronoUnit.DAYS.between(startDate, endDate);
+        }
+        return ChronoUnit.DAYS.between(startDate, now);
     }
 }

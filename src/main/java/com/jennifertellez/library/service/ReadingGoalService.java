@@ -188,7 +188,6 @@ public class ReadingGoalService {
         boolean onTrack = booksRead >= expectedBooks * 0.9; // 90% threshold
 
 
-
         List<Book> recentlyFinished = finishedBooks.stream()
                 .sorted((b1, b2) -> b2.getFinishedDate().compareTo(b1.getFinishedDate()))
                 .limit(5)
@@ -205,37 +204,5 @@ public class ReadingGoalService {
         progress.setRecentlyFinished(recentlyFinished);
 
         return progress;
-    }
-
-    private ReadingGoalDTO convertToDTO(ReadingGoal goal) {
-        ReadingGoalDTO dto = new ReadingGoalDTO();
-        dto.setId(goal.getId());
-        dto.setTargetBooks(goal.getTargetBooks());
-        dto.setYear(goal.getYear());
-        dto.setStartDate(goal.getStartDate());
-        dto.setEndDate(goal.getEndDate());
-        dto.setDescription(goal.getDescription());
-        dto.setCreatedAt(goal.getCreatedAt());
-        dto.setUpdatedAt(goal.getUpdatedAt());
-        return dto;
-    }
-
-    private BookResponse convertBookToResponse(Book book) {
-        BookResponse response = new BookResponse();
-        response.setId(book.getId());
-        response.setIsbn(book.getIsbn());
-        response.setTitle(book.getTitle());
-        response.setAuthor(book.getAuthor());
-        response.setDescription(book.getDescription());
-        response.setPublishedDate(book.getPublishedDate());
-        response.setPageCount(book.getPageCount());
-        response.setThumbnailUrl(book.getThumbnail());
-        response.setStatus(book.getStatus());
-        response.setFinishedDate(book.getFinishedDate());
-        response.setRating(book.getRating());
-        response.setNotes(book.getNotes());
-        response.setCreatedAt(book.getCreatedAt());
-        response.setUpdatedAt(book.getUpdatedAt());
-        return response;
     }
 }

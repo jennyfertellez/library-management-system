@@ -25,7 +25,7 @@ public class ReadingGoal {
     @Column(nullable = false)
     private Integer targetBooks;
 
-    @Column(nullable = false)
+    @Column(name = "goal_year", nullable = false)
     private Integer year;
 
     @Column(nullable = false)

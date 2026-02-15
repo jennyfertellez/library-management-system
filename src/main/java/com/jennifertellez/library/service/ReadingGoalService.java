@@ -116,7 +116,7 @@ public class ReadingGoalService {
             readingGoal.setEndDate(updateReadingGoalRequest.getEndDate());
         }
         if (updateReadingGoalRequest.getDescription() != null) {
-            readingGoal.setDescription(readingGoal.getDescription());
+            readingGoal.setDescription(updateReadingGoalRequest.getDescription());
         }
         if (updateReadingGoalRequest.getIsActive() != null) {
             if (updateReadingGoalRequest.getIsActive()) {

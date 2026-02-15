@@ -16,14 +16,14 @@ import java.time.LocalDate;
 public class UpdateReadingGoalRequest {
 
     @Min(value = 1, message = "Target must be at least 1 book")
-    @Max(value = 1000, message = "traget cannot exceed 1000 books")
+    @Max(value = 1000, message = "target cannot exceed 1000 books")
     private Integer targetBooks;
 
     private LocalDate startDate;
 
     private LocalDate endDate;
 
-    @Size(max = 500, message = "Descrption cannot excced 500 characters")
+    @Size(max = 500, message = "Description cannot excced 500 characters")
     private String description;
 
     private Boolean isActive;

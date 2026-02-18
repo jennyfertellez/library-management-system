@@ -23,7 +23,7 @@ public class UpdateReadingGoalRequest {
 
     private LocalDate endDate;
 
-    @Size(max = 500, message = "Description cannot excced 500 characters")
+    @Size(max = 500, message = "Description cannot exceed 500 characters")
     private String description;
 
     private Boolean isActive;

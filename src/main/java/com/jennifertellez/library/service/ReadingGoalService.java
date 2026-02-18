@@ -88,24 +88,6 @@ public class ReadingGoalService {
 
         ReadingGoal readingGoal = getGoalById(id);
 
-        if (updateReadingGoalRequest.getStartDate() != null || updateReadingGoalRequest.getEndDate() != null) {
-            LocalDate newStart = updateReadingGoalRequest.getStartDate() != null ?
-                    updateReadingGoalRequest.getStartDate() : readingGoal.getStartDate();
-            LocalDate newEnd = updateReadingGoalRequest.getEndDate() != null ?
-                    updateReadingGoalRequest.getEndDate() : readingGoal.getEndDate();
-
-            boolean hasOverlap = readingGoalRepository.existsOverlappingGoal(
-                    id, newStart, newEnd
-            );
-
-            if (hasOverlap) {
-                throw new IllegalArgumentException(
-                        "Updated date range overlaps with another goal"
-                );
-            }
-        }
-
-
         if (updateReadingGoalRequest.getTargetBooks() != null) {
             readingGoal.setTargetBooks(updateReadingGoalRequest.getTargetBooks());
         }
@@ -119,14 +101,6 @@ public class ReadingGoalService {
             readingGoal.setDescription(updateReadingGoalRequest.getDescription());
         }
         if (updateReadingGoalRequest.getIsActive() != null) {
-            if (updateReadingGoalRequest.getIsActive()) {
-                readingGoalRepository.findByIsActiveTrue().ifPresent(existingGoal -> {
-                    if (!existingGoal.getId().equals(id)) {
-                        existingGoal.setIsActive(false);
-                        readingGoalRepository.save(existingGoal);
-                    }
-                });
-            }
             readingGoal.setIsActive(updateReadingGoalRequest.getIsActive());
         }
 

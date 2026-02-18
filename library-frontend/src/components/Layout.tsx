@@ -1,9 +1,26 @@
 import React from 'react';
-import { Link, Outlet } from 'react-router-dom';
-import { BookOpen, Library, BarChart3, Settings } from 'lucide-react';
+import { Link, Outlet, useLocation } from 'react-router-dom';
+import { BookOpen, Library, BarChart3, Settings, Target } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 
 const Layout: React.FC = () => {
+    const location = useLocation();
+
+    const isActive = (path: string) => {
+        if (path === '/') {
+            return location.pathname === '/';
+            }
+        return location.pathname.startsWith(path);
+        };
+
+    const getLinkClasses = (path: string) => {
+        const baseClasses = "inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2";
+            const activeClasses = "text-gray-900 dark:text-gray-100 border-blue-600 dark:border-blue-400";
+            const inactiveClasses = "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:border-gray-300 dark:hover:border-gray-600 border-transparent";
+
+            return `${baseClasses} ${isActive(path) ? activeClasses : inactiveClasses}`;
+        };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Navigation */}
@@ -23,25 +40,32 @@ const Layout: React.FC = () => {
               <div className="hidden sm:ml-8 sm:flex sm:space-x-8">
                 <Link
                   to="/"
-                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 dark:text-gray-100 border-b-2 border-blue-600 dark:border-blue-400"
+                  className={getLinkClasses('/')}
                 >
                   <BarChart3 className="h-4 w-4 mr-2" />
                   Dashboard
                 </Link>
                 <Link
                   to="/books"
-                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:border-gray-300 dark:hover:border-gray-600 border-b-2 border-transparent"
+                  className={getLinkClasses('/books')}
                 >
                   <Library className="h-4 w-4 mr-2" />
                   Books
                 </Link>
                 <Link
                   to="/shelves"
-                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:border-gray-300 dark:hover:border-gray-600 border-b-2 border-transparent"
+                  className={getLinkClasses('/shelves')}
                 >
                   <Settings className="h-4 w-4 mr-2" />
                   Shelves
                 </Link>
+                <Link
+                  to="/goals"
+                  className={getLinkClasses('/goals')}
+                >
+                 <Target className="h-4 w-4 mr-2" />
+                  Goals
+               </Link>
               </div>
             </div>
 

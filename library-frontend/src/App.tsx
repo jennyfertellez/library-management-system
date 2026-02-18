@@ -4,6 +4,7 @@ import DashboardPage from './pages/DashboardPage';
 import BookListPage from './pages/BookListPage';
 import ShelvesPage from './pages/ShelvesPage';
 import BookDetailPage from './pages/BookDetailPage';
+import ReadingGoalsPage from './pages/ReadingGoalsPage';
 import { ThemeProvider } from './contexts/ThemeContext';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
             <Route path="books" element={<BookListPage />} />
             <Route path="books/:id" element={<BookDetailPage />} />
             <Route path="shelves" element={<ShelvesPage />} />
+            <Route path='goals' element={<ReadingGoalsPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

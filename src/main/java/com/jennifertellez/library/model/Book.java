@@ -53,6 +53,9 @@ public class Book {
     @Column(nullable = false)
     private ReadingStatus status = ReadingStatus.TO_READ;
 
+    @Column(name = "date_started")
+    private LocalDate dateStarted;
+
     @Column(name = "finished_date")
     private LocalDate finishedDate;
 

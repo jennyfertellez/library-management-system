@@ -21,10 +21,12 @@ public class UpdateBookRequest {
     @Size(max = 255, message = "Author must be less than 255 characters")
     private String author;
 
-    @Size(max = 2000, message = "Desciption must be less than 2000 characters")
+    @Size(max = 2000, message = "Description must be less than 2000 characters")
     private String description;
 
     private ReadingStatus status;
+
+    private LocalDate dateStarted;
 
     private LocalDate finishedDate;
 

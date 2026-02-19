@@ -55,6 +55,9 @@ public class BookServiceImpl implements BookService {
         book.setThumbnail(request.getThumbnailUrl());
         book.setStatus(request.getStatus());
         book.setNotes(request.getNotes());
+        book.setDateStarted(request.getDateStarted());
+        book.setFinishedDate(request.getFinishedDate());
+        book.setRating(request.getRating());
 
         Book savedBook = bookRepository.save(book);
         log.info("Book created successfully with ID: {}", savedBook.getId());
@@ -108,6 +111,9 @@ public class BookServiceImpl implements BookService {
         }
         if (request.getStatus() != null) {
             book.setStatus(request.getStatus());
+        }
+        if (request.getDateStarted() != null) {
+            book.setDateStarted(request.getDateStarted());
         }
         if (request.getFinishedDate() != null) {
             book.setFinishedDate(request.getFinishedDate());

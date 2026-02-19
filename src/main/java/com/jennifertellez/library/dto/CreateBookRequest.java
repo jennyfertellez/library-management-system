@@ -1,12 +1,12 @@
 package com.jennifertellez.library.dto;
 
 import com.jennifertellez.library.model.ReadingStatus;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -37,6 +37,15 @@ public class CreateBookRequest {
 
     private ReadingStatus status = ReadingStatus.TO_READ;
 
+    private LocalDate dateStarted;
+
+    private LocalDate finishedDate;
+
+    @Min(value = 1, message = "Rating must be between 1 and 5")
+    @Max(value = 5, message = "Rating must be between 1 and 5")
+    private Integer rating;
+
     private String notes;
 
+    private Long malId;
 }

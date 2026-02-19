@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, Calendar } from 'lucide-react';
 import type { Book, UpdateBookRequest } from '../types/book';
 import { ReadingStatus } from '../types/book';
 import { bookService } from '../services/bookService';
@@ -25,6 +25,8 @@ const EditBookModal: React.FC<EditBookModalProps> = ({
     author: book.author || '',
     description: book.description || '',
     status: book.status,
+    dateStarted: book.dateStarted || '',
+    finishedDate: book.finishedDate || '',
     rating: book.rating || undefined,
     notes: book.notes || '',
   });
@@ -36,6 +38,8 @@ const EditBookModal: React.FC<EditBookModalProps> = ({
       author: book.author || '',
       description: book.description || '',
       status: book.status,
+      dateStarted: book.dateStarted || '',
+      finishedDate: book.finishedDate || '',
       rating: book.rating || undefined,
       notes: book.notes || '',
     });
@@ -124,7 +128,40 @@ const EditBookModal: React.FC<EditBookModalProps> = ({
               </select>
             </div>
 
+            {(formData.status === ReadingStatus.CURRENTLY_READING ||
+                formData.status === ReadingStatus.FINISHED ||
+                formData.status === ReadingStatus.DNF) && (
+                <div>
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <Calendar className="w-4 h-4" />
+                      Date Started
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.dateStarted || ''}
+                    onChange={(e) => setFormData({ ...formData, dateStarted: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent"
+                   />
+                  </div>
+             )}
+
+            {formData.status === ReadingStatus.FINISHED && (
+                <div>
+                   <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                     <Calendar className="w-4 h-4" />
+                      Date Finished
+                   </label>
+                   <input
+                     type="date"
+                     value={formData.finishedDate || ''}
+                     onChange={(e) => setFormData({ ...formData, finishedDate: e.target.value })}
+                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent"
+                   />
+               </div>
+            )}
+
             {/* Rating */}
+            {formData.status === ReadingStatus.FINISHED && (
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Rating (1-5)
@@ -145,6 +182,7 @@ const EditBookModal: React.FC<EditBookModalProps> = ({
                 <option value="5">5 - Excellent</option>
               </select>
             </div>
+            )}
 
             {/* Description */}
             <div>

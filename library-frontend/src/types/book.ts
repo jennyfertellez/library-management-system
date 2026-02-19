@@ -15,6 +15,7 @@ export interface Book {
   pageCount?: number;
   thumbnailUrl?: string;
   status: ReadingStatus;
+  dateStarted?: string;
   finishedDate?: string;
   rating?: number;
   notes?: string;
@@ -31,7 +32,11 @@ export interface CreateBookRequest {
   pageCount?: number;
   thumbnailUrl?: string;
   status?: ReadingStatus;
+  dateStarted: string;
+  finishedDate: string;
+  rating?: number;
   notes?: string;
+  malId?: number;
 }
 
 export interface UpdateBookRequest {

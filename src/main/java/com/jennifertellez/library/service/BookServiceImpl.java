@@ -3,15 +3,20 @@ package com.jennifertellez.library.service;
 import com.jennifertellez.library.dto.*;
 import com.jennifertellez.library.dto.jikan.JikanMangaResponse;
 import com.jennifertellez.library.dto.jikan.JikanSingleMangaResponse;
+import com.jennifertellez.library.exception.BookDeleteConflictException;
 import com.jennifertellez.library.exception.BookNotFoundException;
 import com.jennifertellez.library.exception.DuplicateBookException;
 import com.jennifertellez.library.model.Book;
 import com.jennifertellez.library.model.BookSearchCriteria;
+import com.jennifertellez.library.model.BookShelf;
 import com.jennifertellez.library.model.ReadingStatus;
 import com.jennifertellez.library.repository.BookRepository;
+import com.jennifertellez.library.repository.BookShelfRepository;
 import com.jennifertellez.library.repository.BookSpecification;
+import com.jennifertellez.library.repository.ShelfRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -33,6 +38,7 @@ public class BookServiceImpl implements BookService {
     private final GoogleBooksService googleBooksService;
     private final JikanService jikanService;
     private final OpenLibraryService openLibraryService;
+    private final BookShelfRepository bookShelfRepository;
 
     @Override
     public BookResponse createBook(CreateBookRequest request) {
@@ -138,9 +144,27 @@ public class BookServiceImpl implements BookService {
         if (!bookRepository.existsById(id)) {
             throw new BookNotFoundException(id);
         }
+        if (bookShelfRepository.existsById(id)) {
+            throw new BookDeleteConflictException(id);
+        }
 
         bookRepository.deleteById(id);
         log.info("Book deleted successfully with ID: {}", id);
+    }
+
+    @Override
+    @Transactional
+    public void deleteBookAndRemoveFromShelves(Long id) {
+        log.info("Force deleting book with ID: {}", id);
+
+        if (!bookRepository.existsById(id)) {
+            throw new BookNotFoundException(id);
+        }
+
+        bookShelfRepository.deleteByBookId(id);
+        bookRepository.deleteById(id);
+
+        log.info("Book and shelf references deleted successfully with ID: {}", id);
     }
 
     @Override

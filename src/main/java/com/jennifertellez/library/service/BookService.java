@@ -21,6 +21,8 @@ public interface BookService {
 
     void deleteBook(Long id);
 
+    void deleteBookAndRemoveFromShelves(Long id);
+
     List<BookResponse> searchBooks(String searchTerm);
 
     PageResponse<BookResponse> getAllBooks(Pageable pageable);

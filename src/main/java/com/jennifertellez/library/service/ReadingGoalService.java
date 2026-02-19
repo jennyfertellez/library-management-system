@@ -29,33 +29,13 @@ public class ReadingGoalService {
     public ReadingGoal createGoal(CreateReadingGoalRequest createReadingGoalRequest) {
         log.info("Creating new reading goal for year {}", createReadingGoalRequest.getYear());
 
-        // Check for overlapping goals
-        boolean hasOverlap = readingGoalRepository.existsOverlappingGoal(
-                0L,
-                createReadingGoalRequest.getStartDate(),
-                createReadingGoalRequest.getEndDate()
-        );
-
-        if (hasOverlap) {
-            throw new IllegalArgumentException(
-                    "A goal already exists for this date range"
-            );
-        }
-
-        // Deactivate other active goals if this one is being set as active
-        readingGoalRepository.findByIsActiveTrue().ifPresent(existingGoal -> {
-            existingGoal.setIsActive(false);
-            readingGoalRepository.save(existingGoal);
-            log.info("Deactivated previous active goal: {}", existingGoal.getId());
-        });
-
         ReadingGoal goal = new ReadingGoal();
         goal.setTargetBooks(createReadingGoalRequest.getTargetBooks());
         goal.setYear(createReadingGoalRequest.getYear());
         goal.setStartDate(createReadingGoalRequest.getStartDate());
         goal.setEndDate(createReadingGoalRequest.getEndDate());
         goal.setDescription(createReadingGoalRequest.getDescription());
-        goal.setIsActive(true);
+        goal.setIsActive(createReadingGoalRequest.getEndDate().isAfter(LocalDate.now()));
 
         ReadingGoal saved = readingGoalRepository.save(goal);
         log.info("Created reading goal with ID: {}", saved.getId());

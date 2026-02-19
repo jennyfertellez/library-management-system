@@ -20,10 +20,14 @@ import EditBookModal from '../components/EditBookModal';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
 
 const statusColors = {
-  [ReadingStatus.TO_READ]: 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300',
-  [ReadingStatus.CURRENTLY_READING]: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300',
-  [ReadingStatus.FINISHED]: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300',
-  [ReadingStatus.DNF]: 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300',
+  [ReadingStatus.TO_READ]:
+    'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300',
+  [ReadingStatus.CURRENTLY_READING]:
+    'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300',
+  [ReadingStatus.FINISHED]:
+    'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300',
+  [ReadingStatus.DNF]:
+    'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300',
 };
 
 const statusLabels = {
@@ -116,7 +120,9 @@ const BookDetailPage: React.FC = () => {
         </Link>
 
         <div className="rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 p-4">
-          <p className="text-red-800 dark:text-red-200">{error || 'Book not found'}</p>
+          <p className="text-red-800 dark:text-red-200">
+            {error || 'Book not found'}
+          </p>
         </div>
       </div>
     );
@@ -160,7 +166,9 @@ const BookDetailPage: React.FC = () => {
                   {book.title}
                 </h1>
                 {book.author && (
-                  <p className="text-xl text-gray-600 dark:text-gray-400">by {book.author}</p>
+                  <p className="text-xl text-gray-600 dark:text-gray-400">
+                    by {book.author}
+                  </p>
                 )}
               </div>
 
@@ -224,47 +232,117 @@ const BookDetailPage: React.FC = () => {
             <div className="mb-6 grid grid-cols-2 gap-4">
               {book.isbn && (
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">ISBN</p>
-                  <p className="font-medium text-gray-900 dark:text-gray-100">{book.isbn}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    ISBN
+                  </p>
+                  <p className="font-medium text-gray-900 dark:text-gray-100">
+                    {book.isbn}
+                  </p>
                 </div>
               )}
 
               {book.publishedDate && (
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Published</p>
-                  <p className="font-medium text-gray-900 dark:text-gray-100">{book.publishedDate}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Published
+                  </p>
+                  <p className="font-medium text-gray-900 dark:text-gray-100">
+                    {book.publishedDate}
+                  </p>
                 </div>
               )}
 
               {book.pageCount && (
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Pages</p>
-                  <p className="font-medium text-gray-900 dark:text-gray-100">{book.pageCount}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Pages
+                  </p>
+                  <p className="font-medium text-gray-900 dark:text-gray-100">
+                    {book.pageCount}
+                  </p>
                 </div>
               )}
 
               {book.rating && (
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Rating</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Rating
+                  </p>
                   <div className="flex items-center">
-                    <Star className="mr-1 h-5 w-5 fill-yellow-500 dark:fill-yellow-400 text-yellow-500 dark:text-yellow-400" />
-                    <span className="font-medium text-gray-900 dark:text-gray-100">{book.rating}/5</span>
+                    <Star className="mr-1 h-5 w-5 fill-yellow-500 text-yellow-500 dark:fill-yellow-400 dark:text-yellow-400" />
+                    <span className="font-medium text-gray-900 dark:text-gray-100">
+                      {book.rating}/5
+                    </span>
                   </div>
                 </div>
               )}
             </div>
 
-            {book.finishedDate && (
-              <div className="mb-6 flex items-center text-gray-600 dark:text-gray-400">
-                <Calendar className="mr-2 h-4 w-4" />
-                Finished on{' '}
-                {new Date(book.finishedDate).toLocaleDateString()}
+            {(book.dateStarted || book.finishedDate) && (
+              <div className="mb-6">
+                <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  <Calendar className="h-5 w-5" />
+                  Reading Timeline
+                </h2>
+
+                <div className="space-y-3 rounded-lg bg-gray-50 p-4 dark:bg-gray-700/50">
+                  {book.dateStarted && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600 dark:text-gray-400">
+                        Started:
+                      </span>
+                      <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                        {new Date(book.dateStarted).toLocaleDateString('en-US', {
+                          month: 'long',
+                          day: 'numeric',
+                          year: 'numeric',
+                        })}
+                      </span>
+                    </div>
+                  )}
+
+                  {book.finishedDate && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600 dark:text-gray-400">
+                        Finished:
+                      </span>
+                      <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                        {new Date(book.finishedDate).toLocaleDateString(
+                          'en-US',
+                          {
+                            month: 'long',
+                            day: 'numeric',
+                            year: 'numeric',
+                          }
+                        )}
+                      </span>
+                    </div>
+                  )}
+
+                  {book.dateStarted && book.finishedDate && (
+                    <div className="flex items-center justify-between border-t border-gray-200 pt-3 dark:border-gray-600">
+                      <span className="text-sm text-gray-600 dark:text-gray-400">
+                        Reading time:
+                      </span>
+                      <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
+                        {Math.ceil(
+                          (new Date(book.finishedDate).getTime() -
+                            new Date(book.dateStarted).getTime()) /
+                            (1000 * 60 * 60 * 24)
+                        )}{' '}
+                        days
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 
             {book.description && (
               <div className="mb-6">
-                <h2 className="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100">Description</h2>
+                <h2 className="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  Description
+                </h2>
                 <p className="leading-relaxed text-gray-700 dark:text-gray-300">
                   {book.description}
                 </p>
@@ -273,8 +351,10 @@ const BookDetailPage: React.FC = () => {
 
             {book.notes && (
               <div className="mb-6">
-                <h2 className="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100">My Notes</h2>
-                <div className="rounded-lg border border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-900/20 p-4">
+                <h2 className="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  My Notes
+                </h2>
+                <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-900/20">
                   <p className="whitespace-pre-wrap text-gray-700 dark:text-gray-300">
                     {book.notes}
                   </p>
@@ -282,12 +362,11 @@ const BookDetailPage: React.FC = () => {
               </div>
             )}
 
-            <div className="border-t border-gray-200 dark:border-gray-700 pt-4 text-sm text-gray-500 dark:text-gray-400">
+            <div className="border-t border-gray-200 pt-4 text-sm text-gray-500 dark:border-gray-700 dark:text-gray-400">
               <p>Added: {new Date(book.createdAt).toLocaleDateString()}</p>
               {book.updatedAt !== book.createdAt && (
                 <p>
-                  Updated:{' '}
-                  {new Date(book.updatedAt).toLocaleDateString()}
+                  Updated: {new Date(book.updatedAt).toLocaleDateString()}
                 </p>
               )}
             </div>

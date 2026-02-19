@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, BookOpen, Barcode } from 'lucide-react';
+import { X, BookOpen, Barcode, Calendar } from 'lucide-react';
 import type { CreateBookRequest } from '../types/book';
 import { ReadingStatus } from '../types/book';
 import { bookService } from '../services/bookService';
@@ -33,6 +33,10 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
     isbn: '',
     description: '',
     status: ReadingStatus.TO_READ,
+    dateStarted: '',
+    finishedDate: '',
+    rating: undefined,
+    notes: '',
   });
 
   useEffect(() => {
@@ -158,6 +162,10 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
       isbn: '',
       description: '',
       status: ReadingStatus.TO_READ,
+      dateStarted: '',
+      finishedDate: '',
+      rating: undefined,
+      notes: '',
     });
     setIsbn('');
     setSearchResults([]);
@@ -404,6 +412,79 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
                   <option value={ReadingStatus.CURRENTLY_READING}>Currently Reading</option>
                   <option value={ReadingStatus.FINISHED}>Finished</option>
                 </select>
+              </div>
+
+              {(formData.status === ReadingStatus.CURRENTLY_READING ||
+              formData.status === ReadingStatus.FINISHED) && (
+                <div>
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <Calendar className="w-4 h-4" />
+                    Date Started
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.dateStarted || ''}
+                    onChange={(e) => setFormData({ ...formData, dateStarted: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent"
+                  />
+                </div>
+              )}
+
+              {formData.status === ReadingStatus.FINISHED && (
+                <div>
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <Calendar className="w-4 h-4" />
+                    Date Finished
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.finishedDate || ''}
+                    onChange={(e) => setFormData({ ...formData, finishedDate: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent"
+                  />
+                </div>
+              )}
+
+              {formData.status === ReadingStatus.FINISHED && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Rating (1-5 stars)
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      max="5"
+                      value={formData.rating || ''}
+                      onChange={(e) => setFormData({ ...formData, rating: e.target.value ? parseInt(e.target.value) : undefined })}
+                      placeholder="Optional"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent"
+                    />
+                  </div>
+              )}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Notes
+                </label>
+                <textarea
+                  value={formData.notes || ''}
+                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                  rows={3}
+                  placeholder="Your thoughts about this book..."
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent resize-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Description
+                </label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent"
+                />
               </div>
 
               <div>

@@ -157,6 +157,14 @@ public class BookController {
         return ResponseEntity.noContent().build();
     }
 
+    // Delete Book and remove from shelves
+    @DeleteMapping("/{id}/force")
+    public ResponseEntity<Void> forceDeleteBook(@PathVariable Long id) {
+        log.info("DELETE /api/books/{}/force - Force deleting book", id);
+        bookService.deleteBookAndRemoveFromShelves(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @Operation(
             summary = "Search books with pagination",
             description = "Search books by title, author, or description with pagination support"

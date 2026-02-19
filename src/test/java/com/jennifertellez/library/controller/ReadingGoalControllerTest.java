@@ -190,7 +190,7 @@ class ReadingGoalControllerTest {
         progressDTO.setGoalId(1L);
         progressDTO.setTargetBooks(52);
         progressDTO.setBooksRead(10);
-        progressDTO.setPercentageCompleted(19.2);
+        progressDTO.setPercentageComplete(19.2);
 
         when(readingGoalService.getGoalProgress(1L))
                 .thenReturn(progressDTO);

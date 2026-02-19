@@ -27,7 +27,7 @@ public class GoalProgressDTO {
     // Progress metrics
     private Integer booksRead;
     private Integer booksRemaining;
-    private Double percentageCompleted;
+    private Double percentageComplete;
 
     // Time metrics
     private Long daysElapsed;

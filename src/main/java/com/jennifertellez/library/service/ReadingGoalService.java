@@ -150,7 +150,7 @@ public class ReadingGoalService {
         GoalProgressDTO progress = GoalProgressDTO.fromGoal(goal);
         progress.setBooksRead(booksRead);
         progress.setBooksRemaining(booksRemaining);
-        progress.setPercentageCompleted(Math.round(percentageComplete * 10.0) / 10.0);
+        progress.setPercentageComplete(Math.round(percentageComplete * 10.0) / 10.0);
         progress.setBooksPerMonth(Math.round(booksPerMonth * 10.0) / 10.0);
         progress.setBooksPerWeek(Math.round(booksPerWeek * 10.0) / 10.0);
         progress.setAverageBooksPerMonth(Math.round(averageBooksPerMonth * 10.0) / 10.0);

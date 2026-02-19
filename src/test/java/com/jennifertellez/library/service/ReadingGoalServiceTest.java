@@ -253,7 +253,7 @@ Update tests to new logic
         assertNotNull(result);
         assertEquals(10, result.getBooksRead());
         assertEquals(42, result.getBooksRemaining());
-        assertTrue(result.getPercentageCompleted() > 0);
+        assertTrue(result.getPercentageComplete() > 0);
         assertNotNull(result.getBooksPerMonth());
         assertNotNull(result.getOnTrack());
     }
@@ -273,7 +273,7 @@ Update tests to new logic
         assertNotNull(result);
         assertEquals(0, result.getBooksRead());
         assertEquals(52, result.getBooksRemaining());
-        assertEquals(0.0, result.getPercentageCompleted());
+        assertEquals(0.0, result.getPercentageComplete());
     }
 
     @Test

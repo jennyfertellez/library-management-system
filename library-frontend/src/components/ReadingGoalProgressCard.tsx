@@ -1,5 +1,6 @@
+import { Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
-import { Calendar, Target, TrendingUp, Edit2, Trash2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Calendar, Target, TrendingUp, Edit2, Trash2, CheckCircle, AlertCircle, BookOpen } from 'lucide-react';
 import ReadingGoalApi, {
     type ReadingGoal,
     type GoalProgress
@@ -101,7 +102,7 @@ const GoalProgressCard: React.FC<GoalProgressCardProps> = ({ goal, onEdit, onDel
         </span>
       </div>
 
-      {/* Progress Bar */}
+      {/* Progress Bar - Two-Tone */}
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -111,11 +112,51 @@ const GoalProgressCard: React.FC<GoalProgressCardProps> = ({ goal, onEdit, onDel
             {progress.percentageComplete}%
           </span>
         </div>
-        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+
+        {/* Two-tone progress bar */}
+        <div className="relative w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 overflow-hidden">
+          {/* Books Read - Green/Blue gradient */}
           <div
-            className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-500"
+            className="absolute top-0 left-0 h-full bg-gradient-to-r from-green-500 to-green-600 dark:from-green-600 dark:to-green-700 transition-all duration-500"
             style={{ width: `${Math.min(progress.percentageComplete, 100)}%` }}
-          ></div>
+          >
+            <div className="absolute inset-0 flex items-center justify-center">
+              {progress.booksRead > 0 && progress.percentageComplete > 10 && (
+                <span className="text-xs font-semibold text-white">
+                  {progress.booksRead} read
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Books Remaining - Lighter shade */}
+          <div
+            className="absolute top-0 h-full bg-gradient-to-r from-blue-200 to-blue-300 dark:from-blue-800 dark:to-blue-900 transition-all duration-500"
+            style={{
+              left: `${Math.min(progress.percentageComplete, 100)}%`,
+              width: `${100 - Math.min(progress.percentageComplete, 100)}%`
+            }}
+          >
+            <div className="absolute inset-0 flex items-center justify-center">
+              {progress.booksRemaining > 0 && (100 - progress.percentageComplete) > 10 && (
+                <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">
+                  {progress.booksRemaining} to go
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Legend */}
+        <div className="flex items-center gap-4 mt-2 text-xs">
+          <div className="flex items-center gap-1">
+            <div className="w-3 h-3 rounded-full bg-gradient-to-r from-green-500 to-green-600"></div>
+            <span className="text-gray-600 dark:text-gray-400">Books Read</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="w-3 h-3 rounded-full bg-gradient-to-r from-blue-200 to-blue-300 dark:from-blue-800 dark:to-blue-900"></div>
+            <span className="text-gray-600 dark:text-gray-400">Remaining</span>
+          </div>
         </div>
       </div>
 
@@ -186,31 +227,73 @@ const GoalProgressCard: React.FC<GoalProgressCardProps> = ({ goal, onEdit, onDel
       </div>
 
       {/* Recently Finished Books */}
-      {progress.recentlyFinished.length > 0 && (
+      {progress.recentlyFinished && progress.recentlyFinished.length > 0 ? (
         <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-          <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 flex items-center justify-between">
+            <span>Recently Finished</span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">
+              {progress.recentlyFinished.length} {progress.recentlyFinished.length === 1 ? 'book' : 'books'}
+            </span>
+          </h4>
+          <div className="grid grid-cols-5 gap-3">
+            {progress.recentlyFinished.map((book: any) => (
+              <Link
+                key={book.id}
+                to={`/books/${book.id}`}
+                className="group cursor-pointer"
+              >
+                <div className="aspect-[2/3] mb-2 overflow-hidden rounded-lg shadow-sm group-hover:shadow-md transition-shadow">
+                  {book.thumbnail ? (
+                    <img
+                      src={book.thumbnail}
+                      alt={book.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center">
+                      <BookOpen className="w-6 h-6 text-gray-400 dark:text-gray-500" />
+                    </div>
+                  )}
+                </div>
+
+                {/* Book Info */}
+                <div className="text-xs">
+                  <p className="font-medium text-gray-900 dark:text-gray-100 line-clamp-2 mb-1" title={book.title}>
+                    {book.title}
+                  </p>
+                  {book.author && (
+                    <p className="text-gray-600 dark:text-gray-400 line-clamp-1 mb-1" title={book.author}>
+                      {book.author}
+                    </p>
+                  )}
+                  {book.finishedDate && (
+                    <p className="text-gray-500 dark:text-gray-500 flex items-center gap-1">
+                      <Calendar className="w-3 h-3" />
+                      {new Date(book.finishedDate).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric'
+                      })}
+                    </p>
+                  )}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      ) : (
+        // Empty state
+        <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
             Recently Finished
           </h4>
-          <div className="flex gap-2 overflow-x-auto">
-            {progress.recentlyFinished.map((book) => (
-              <div
-                key={book.id}
-                className="flex-shrink-0 w-16"
-                title={book.title}
-              >
-                {book.thumbnail ? (
-                  <img
-                    src={book.thumbnail}
-                    alt={book.title}
-                    className="w-16 h-24 object-cover rounded shadow-sm"
-                  />
-                ) : (
-                  <div className="w-16 h-24 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center">
-                    <span className="text-xs text-gray-400">No cover</span>
-                  </div>
-                )}
-              </div>
-            ))}
+          <div className="text-center py-8 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <BookOpen className="w-10 h-10 text-gray-400 dark:text-gray-500 mx-auto mb-2" />
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              No books finished yet for this goal
+            </p>
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+              Start reading to see your progress!
+            </p>
           </div>
         </div>
       )}

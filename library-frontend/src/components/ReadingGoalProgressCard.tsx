@@ -5,6 +5,7 @@ import ReadingGoalApi, {
     type ReadingGoal,
     type GoalProgress
 } from '../services/ReadingGoalApi';
+import MonthlyProgressChart from './MonthlyProgressChart';
 
 interface GoalProgressCardProps {
   goal: ReadingGoal;
@@ -225,6 +226,14 @@ const GoalProgressCard: React.FC<GoalProgressCardProps> = ({ goal, onEdit, onDel
           <span className="font-medium">Current pace:</span> {progress.averageBooksPerMonth.toFixed(1)} books/month
         </p>
       </div>
+
+      {/* Monthly Progress Chart */}
+      {progress.monthlyBreakdown && Object.keys(progress.monthlyBreakdown).length > 0 && (
+          <MonthlyProgressChart
+          monthlyData={progress.monthlyBreakdown}
+          targetPerMonth={progress.booksPerMonth}
+          />
+      )}
 
       {/* Recently Finished Books */}
       {progress.recentlyFinished && progress.recentlyFinished.length > 0 ? (

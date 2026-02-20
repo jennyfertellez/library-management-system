@@ -14,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -141,6 +143,31 @@ public class ReadingGoalService {
                 (goal.getTargetBooks() * daysElapsed * 1.0) / totalDays : 0.0;
         boolean onTrack = booksRead >= expectedBooks * 0.9; // 90% threshold
 
+        // Calculate monthly breakdown
+        Map<String, Integer> monthlyBreakdown = new HashMap<>();
+        LocalDate current = goal.getStartDate();
+        LocalDate end = goal.getEndDate();
+
+        while (current.isBefore(end) || current.equals(end)) {
+            String monthKey = current.getYear() + "-" + String.format("%02d", current.getMonthValue());
+
+            LocalDate monthStart = current.withDayOfMonth(1);
+            LocalDate monthEnd = current.withDayOfMonth(current.lengthOfMonth());
+
+            // Count books finished in this month
+            long booksInMonth = finishedBooks.stream()
+                    .filter(book -> {
+                        LocalDate finished = book.getFinishedDate();
+                        return !finished.isBefore(monthStart) && !finished.isAfter(monthEnd);
+                    })
+                    .count();
+            monthlyBreakdown.put(monthKey, (int) booksInMonth);
+
+            // Move to next month
+            current = current.plusMonths(1);
+
+        }
+
 
         List<Book> recentlyFinished = finishedBooks.stream()
                 .sorted((b1, b2) -> b2.getFinishedDate().compareTo(b1.getFinishedDate()))
@@ -156,6 +183,7 @@ public class ReadingGoalService {
         progress.setAverageBooksPerMonth(Math.round(averageBooksPerMonth * 10.0) / 10.0);
         progress.setOnTrack(onTrack);
         progress.setRecentlyFinished(recentlyFinished);
+        progress.setMonthlyBreakdown(monthlyBreakdown);
 
         return progress;
     }

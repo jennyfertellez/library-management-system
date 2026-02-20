@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -42,6 +44,9 @@ public class GoalProgressDTO {
 
     // Recently finished books in this goal period
     private List<Book> recentlyFinished;
+
+    // Monthly stats
+    private Map<String, Integer> monthlyBreakdown = new HashMap<>();
 
     public static GoalProgressDTO fromGoal(ReadingGoal goal) {
         GoalProgressDTO goalProgressDTO = new GoalProgressDTO();
